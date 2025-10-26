@@ -1,0 +1,10 @@
+
+Duplicate Removal Summary:
+
+Source, Initial_Count, Removed_Duplicates, Final_Count
+
+ACM, 1302, 4, 1298
+Arxiv, 44, 1, 43
+Google Scholar, 998, 38, 960
+IEEE, 478, 84, 394
+Scopus, 1011, 238, 773
