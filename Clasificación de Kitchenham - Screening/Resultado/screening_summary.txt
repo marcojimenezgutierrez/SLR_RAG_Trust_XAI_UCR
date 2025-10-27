@@ -1,0 +1,15 @@
+
+Total entradas procesadas: 3468
+Número de Include: 2365
+Número de Exclude: 434
+Número de Maybe: 669
+Distribución por relevancia:
+  Excluir: 1101
+  Baja: 1237
+  Media: 834
+  Alta: 296
+Conteo de menciones por RQ:
+  RQ1: 298
+  RQ2: 1609
+  RQ3: 737
+  RQ4: 1418
