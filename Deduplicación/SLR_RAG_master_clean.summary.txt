@@ -1,0 +1,9 @@
+Archivo: C:\Doctorado\SLR_RAG_Trust_XAI_UCR\Deduplicación\SLR_RAG_master_clean.bib
+Entradas totales: 3468
+Entradas finales: 3238
+Duplicados eliminados: 230
+Claves renombradas por colisión: 94
+Faltan DOI: 839
+Faltan título: 22
+Faltan autor: 27
+Faltan año: 4

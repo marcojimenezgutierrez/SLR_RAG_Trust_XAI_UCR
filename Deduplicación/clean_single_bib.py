@@ -334,9 +334,45 @@ def main(argv: List[str]) -> int:
             })
         kept.append(best)
 
-    # agrupar no DOI por buckets (primera letra de título + año) y similitud
-    buckets: Dict[Tuple[str, int], List[Dict[str, Any]]] = defaultdict(list)
+    # 1) Intentar casar cada entrada sin DOI contra las ya conservadas (con o sin DOI)
+    kept_buckets: Dict[Tuple[str, int], List[Dict[str, Any]]] = defaultdict(list)
+    for e in kept:
+        kept_buckets[(e['title_norm'][:1], e.get('year_int'))].append(e)
+
+    still_no_doi: List[Dict[str, Any]] = []
     for e in no_doi:
+        cand_bucket = kept_buckets.get((e['title_norm'][:1], e.get('year_int')), [])
+        matched = False
+        for k in cand_bucket:
+            # Si ambos años y difieren, descartar
+            if e.get('year_int') and k.get('year_int') and e['year_int'] != k['year_int']:
+                continue
+            if seq_ratio(e['title_norm'], k['title_norm']) < args.thr:
+                continue
+            a1 = normalize_title(e.get('first_author') or '')
+            a2 = normalize_title(k.get('first_author') or '')
+            if a1 and a2 and a1 != a2:
+                continue
+            # Es un duplicado del conservado
+            merge_fields(k, e)
+            removed_rows.append({
+                'reason': 'duplicate_by_title_to_kept',
+                'removed_key': e['key'],
+                'kept_key': k['key'],
+                'doi': k.get('doi', ''),
+                'removed_title': e['title'],
+                'kept_title': k['title'],
+                'removed_year': e['year'],
+                'kept_year': k['year'],
+            })
+            matched = True
+            break
+        if not matched:
+            still_no_doi.append(e)
+
+    # 2) Deduplicar entre las entradas restante sin DOI (entre sí)
+    buckets: Dict[Tuple[str, int], List[Dict[str, Any]]] = defaultdict(list)
+    for e in still_no_doi:
         buckets[(e['title_norm'][:1], e.get('year_int'))].append(e)
 
     visited = set()
@@ -420,4 +456,3 @@ def main(argv: List[str]) -> int:
 
 if __name__ == '__main__':
     raise SystemExit(main(sys.argv[1:]))
-

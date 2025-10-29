@@ -1,0 +1,231 @@
+reason,doi,removed_key,kept_key,removed_title,kept_title,removed_year,kept_year
+duplicate_by_doi,10.1145/3726302.3730244,feng_response_2025,feng_response_2025,Response {Quality,Response {Quality,2025,2025
+duplicate_by_doi,10.1145/3701716.3715473,prahlad_personalizing_2025,prahlad_personalizing_2025,Personalizing {Large,Personalizing {Large,2025,2025
+duplicate_by_doi,10.1145/3626772.3657957,salemi_evaluating_2024,salemi_evaluating_2024,Evaluating {Retrieval,Evaluating retrieval quality in retrieval-augmented generation,2024,2024
+duplicate_by_doi,10.1145/3626772.3657660,sudhi_rag-ex_2024,sudhi_rag-ex_2024,{RAG,Rag-ex: {A,2024,2024
+duplicate_by_doi,10.1145/3626772.3661370,xu_retrieval-augmented_2024,xu_retrieval-augmented_2024,Retrieval-{Augmented,Retrieval-augmented generation with knowledge graphs for customer service question answering,2024,2024
+duplicate_by_doi,10.1145/3726302.3730165,thakur_assessing_2025,thakur_assessing_2025,Assessing {Support,Assessing {Support,2025,2025
+duplicate_by_doi,10.1145/3726302.3731969,belikova_data-efficient_2025,belikova_data-efficient_2025,Data-efficient {Meta,Data-efficient {Meta,2025,2025
+duplicate_by_doi,10.1145/3722570.3726897,yang_explaingen_2025,yang_explaingen_2025,{ExplainGen,{ExplainGen,2025,2025
+duplicate_by_doi,10.1145/3701551.3704123,sokol_ventana_2025,sokol_ventana_2025,Ventana a la {Verdad,Ventana a la {Verdad,2025,2025
+duplicate_by_doi,10.1145/3704440.3704778,lee_poster_2024,lee_llm-driven_2024,Poster {Abstract,An {LLM,2024,2024
+duplicate_by_doi,10.1145/3657604.3664690,salminen_using_2024,salminen_using_2024,Using {Cipherbot,Using {Cipherbot,2024,2024
+duplicate_by_doi,10.1145/3726302.3733591,carmel_liverag_2025,carmel_liverag_2025,The {LiveRAG,The {LiveRAG,2025,2025
+duplicate_by_doi,10.1145/3726302.3731956,varga_inquiry_2025,varga_inquiry_2025,Inquiry {Assistant,Inquiry {Assistant,2025,2025
+duplicate_by_doi,10.1145/3626772.3657935,huly_old_2024,huly_old_2024,Old {IR,Old ir methods meet rag,2024,2024
+duplicate_by_doi,10.1145/3626772.3661345,rome_ask_2024,rome__2024,"""{Ask",""" {Ask",2024,2024
+duplicate_by_doi,10.1145/3639856.3639895,sarmah_towards_2023,sarmah_towards_2024,Towards reducing hallucination in extracting information from financial reports using {Large,Towards reducing hallucination in extracting information from financial reports using {Large,2023,2024
+duplicate_by_doi,10.1145/3663742.3663973,ngom_mallet_2024,ngom_mallet_2024,Mallet: {SQL,Mallet: {Sql,2024,2024
+duplicate_by_doi,10.1145/3589335.3651557,venkatakrishnan_semantic_2024,venkatakrishnan_semantic_2024,Semantic interlinking of {Immigration,Semantic interlinking of {Immigration,2024,2024
+duplicate_by_doi,10.1145/3626772.3657662,wang_mememo_2024,wang_mememo_2024,{MeMemo,{MeMemo,2024,2024
+duplicate_by_doi,10.1145/3726302.3729957,su_parametric_2025,su_parametric_2025,Parametric {Retrieval,Parametric retrieval augmented generation,2025,2025
+duplicate_by_doi,10.1145/3731120.3744592,wallat_correctness_2025,wallat_correctness_2025,Correctness is not {Faithfulness,Correctness is not {Faithfulness,2025,2025
+duplicate_by_doi,10.1145/3696410.3714717,dong_understand_2025,dong_understand_2025,Understand {What,Understand what {LLM,2025,2025
+duplicate_by_doi,10.1145/3695053.3731093,jiang_rago_2025,jiang_rago_2025,{RAGO,Rago: {Systematic,2025,2025
+duplicate_by_doi,10.1145/3708657.3708763,song_uragunified_2025,song_urag_2025,{URAG,{URAG,2025,2025
+duplicate_by_doi,10.1145/3696410.3714756,zhang_traceback_2025,zhang_traceback_2025,Traceback of {Poisoning,Traceback of poisoning attacks to retrieval-augmented generation,2025,2025
+duplicate_by_doi,10.1145/3726302.3730112,wang_unveiling_2025,wang_unveiling_2025,Unveiling {Knowledge,Unveiling {Knowledge,2025,2025
+duplicate_by_doi,10.1145/3721146.3721942,guerraoui_efficient_2025,guerraoui_efficient_2025,Efficient {Federated,Efficient federated search for retrieval-augmented generation,2025,2025
+duplicate_by_doi,10.1145/3733155.3733192,pinna_integration_2025,pinna_integration_2025,Integration of {Retrieval,Integration of {Retrieval,2025,2025
+duplicate_by_doi,10.1145/3721146.3721941,bergman_leveraging_2025,bergman_leveraging_2025,Leveraging {Approximate,Leveraging {Approximate,2025,2025
+duplicate_by_doi,10.1145/3695053.3731032,mahapatra_-storage_2025,mahapatra_-storage_2025,In-{Storage,In-{Storage,2025,2025
+duplicate_by_doi,10.1145/3672608.3707898,simoni_morse_2025,simoni_morse_2025,{MoRSE,{MoRSE,2025,2025
+duplicate_by_doi,10.1145/3732775.3733586,gokdemir_hiperrag_2025,gokdemir_hiperrag_2025,{HiPerRAG,{HiPerRAG,2025,2025
+duplicate_by_doi,10.1145/3696410.3714771,liu_mask-based_2025,liu_mask-based_2025,Mask-based {Membership,Mask-based {Membership,2025,2025
+duplicate_by_doi,10.1145/3664647.3680661,xu_p-rag_2024,xu_p-rag_2024,P-{RAG,P-{RAG,2024,2024
+duplicate_by_doi,10.1145/3726302.3729907,tang_boosting_2025,tang_boosting_2025,Boosting {Retrieval,Boosting {Retrieval,2025,2025
+duplicate_by_doi,10.1145/3677389.3702522,zhang_exploring_2025,zhang_exploring_2025,Exploring efficient optimization techniques in online retrieval-augmented generation application,Exploring {Efficient,2025,2025
+duplicate_by_doi,10.1145/3637528.3671932,hu_prompt_2024,hu_prompt_2024,Prompt {Perturbation,Prompt perturbation in retrieval-augmented generation based large language models,2024,2024
+duplicate_by_doi,10.1145/3701551.3703580,wu_lighter_2025,wu_lighter_2025,Lighter {And,Lighter and better: {Towards,2025,2025
+duplicate_by_doi,10.1145/3627673.3679582,zhu_emerge_2024,zhu_emerge_2024,{EMERGE,Emerge: {Enhancing,2024,2024
+duplicate_by_doi,10.1145/3703412.3703431,liang_efficient_2025,liang_efficient_2025,Efficient and verifiable responses using {Retrieval,Efficient and verifiable responses using {Retrieval,2025,2025
+duplicate_by_doi,10.1145/3644815.3644945,barnett_seven_2024,barnett_seven_2024,Seven {Failure,Seven failure points when engineering a retrieval augmented generation system,2024,2024
+duplicate_by_doi,10.1145/3637528.3671656,xu_face4rag_2024,xu_face4rag_2024,{Face4Rag,Face4rag: {Factual,2024,2024
+duplicate_by_doi,10.1145/3726302.3730058,jiao_pr-attack_2025,jiao_pr-attack_2025,{PR,Pr-attack: {Coordinated,2025,2025
+duplicate_by_doi,10.1145/3726302.3730075,shi_retrieval_2025,shi_retrieval_2025,Retrieval {Augmented,Retrieval augmented generation with collaborative filtering for personalized text generation,2025,2025
+duplicate_by_doi,10.1145/3680256.3721324,shawon_retrieval_2025,shawon_retrieval_2025,Retrieval {Augmented,Retrieval {Augmented,2025,2025
+duplicate_by_doi,10.1145/3626772.3657760,yang_im-rag_2024,yang_im-rag_2024,{IM,Im-rag: {Multi,2024,2024
+duplicate_by_doi,10.1145/3626772.3657853,wang_feb4rag_2024,wang_feb4rag_2024,{FeB4RAG,Feb4rag: {Evaluating,2024,2024
+duplicate_by_doi,10.1145/3676536.3676730,pu_customized_2025,pu_customized_2024,Customized {Retrieval,Customized retrieval augmented generation and benchmarking for {EDA,2025,2024
+duplicate_by_doi,10.1145/3723366.3723380,gao_optimized_2025,gao_optimized_2025,Optimized {Individual,Optimized {Individual,2025,2025
+duplicate_by_doi,10.1145/3689031.3696098,yao_cacheblend_2025,yao_cacheblend_2025,{CacheBlend,{CacheBlend,2025,2025
+duplicate_by_doi,10.1145/3637528.3672065,cai_forag_2024,cai_forag_2024,{FoRAG,Forag: {Factuality,2024,2024
+duplicate_by_doi,10.1145/3696410.3714892,tan_paths-over-graph_2025,tan_paths-over-graph_2025,Paths-over-{Graph,Paths-over-{Graph,2025,2025
+duplicate_by_doi,10.1145/3653081.3653102,yang_retrieval-augmented_2023,yang_retrieval-augmented_2024,Retrieval-{Augmented,Retrieval-{Augmented,2023,2024
+duplicate_by_doi,10.1145/3690624.3709425,yang_addrllm_2025,yang_addrllm_2025,{AddrLLM,{AddrLLM,2025,2025
+duplicate_by_doi,10.1145/3696410.3714877,wang_colacare_2025,wang_colacare_2025,{ColaCare,{ColaCare,2025,2025
+duplicate_by_doi,10.1145/3676536.3676674,qin_robust_2025,qin_robust_2024,Robust {Implementation,Robust implementation of retrieval-augmented generation on edge-based computing-in-memory architectures,2025,2024
+duplicate_by_doi,10.1145/3732945.3732946,hou_applied_2025,hou_applied_2025,Applied {Research,Applied {Research,2025,2025
+duplicate_by_doi,10.1145/3649329.3657353,tsai_rtlfixer_2024,tsai_rtlfixer_2024,{RTLFixer,Rtlfixer: {Automatically,2024,2024
+duplicate_by_doi,10.1145/3689299.3689320,yao_news_2024,yao_news_2024,News {GPT,News {GPT,2024,2024
+duplicate_by_doi,10.1145/3674805.3695401,esposito_beyond_2024,esposito_beyond_2024,Beyond {Words,Beyond words: {On,2024,2024
+duplicate_by_doi,10.1145/3726302.3729920,hu_cg-rag_2025,hu_cg-rag_2025,{CG,Cg-rag: {Research,2025,2025
+duplicate_by_doi,10.1145/3696410.3714546,tan_htmlrag_2025,tan_htmlrag_2025,{HtmlRAG,Htmlrag: {Html,2025,2025
+duplicate_by_doi,10.1145/3652620.3687784,ardimento_rag-based_2024,ardimento_rag-based_2024,A {RAG,A {RAG,2024,2024
+duplicate_by_doi,10.1145/3716815.3729012,sharma_enhancing_2025,sharma_enhancing_2025,Enhancing {Security,Enhancing {Security,2025,2025
+duplicate_by_doi,10.1145/3726302.3730093,gienapp_viability_2025,gienapp_viability_2025,The {Viability,The {Viability,2025,2025
+duplicate_by_doi,10.1145/3664647.3688990,yu_rag-guided_2024,yu_rag-guided_2024,{RAG,Rag-guided large language models for visual spatial description with adaptive hallucination corrector,2024,2024
+duplicate_by_doi,10.1145/3696630.3728569,chen_towards_2025,chen_towards_2025,Towards {Mitigating,Towards {Mitigating,2025,2025
+duplicate_by_doi,10.1145/3703935.3704112,qi_rag-optimized_2025,qi_rag-optimized_2024,{RAG,Rag-optimized tibetan tourism llms: {Enhancing,2025,2024
+duplicate_by_doi,10.1145/3731715.3733451,zhang_towards_2025,zhang_towards_2025,Towards {Comprehensive,Towards {Comprehensive,2025,2025
+duplicate_by_doi,10.1145/3688671.3688784,vassos_now_2024,vassos_now_2024,Now {I,Now {I,2024,2024
+duplicate_by_doi,10.1145/3708821.3733882,shen_pentestagent_2025,shen_pentestagent_2025,{PentestAgent,Pentestagent: {Incorporating,2025,2025
+duplicate_by_doi,10.1145/3731120.3744578,nian_w-rag_2025,nian_w-rag_2025,W-{RAG,W-rag: {Weakly,2025,2025
+duplicate_by_doi,10.1145/3627673.3679659,huang_rd-p_2024,huang_rd-p_2024,{RD,{RD,2024,2024
+duplicate_by_doi,10.1145/3701716.3715257,bi_rbdq_2025,bi_rbdq_2025,{RBDQ,{RBDQ,2025,2025
+duplicate_by_doi,10.1145/3627673.3679746,wang_topology-aware_2024,wang_topology-aware_2024,Topology-aware {Retrieval,Topology-aware {Retrieval,2024,2024
+duplicate_by_doi,10.1145/3726302.3730333,peng_eloq_2025,peng_eloq_2025,{ELOQ,Eloq: {Resources,2025,2025
+duplicate_by_doi,10.1145/3711896.3737432,lin_scirgen_2025,lin_scirgen_2025,{ScIRGen,{ScIRGen,2025,2025
+duplicate_by_doi,10.1145/3626772.3657834,cuconasu_power_2024,cuconasu_power_2024,The {Power,The power of noise: {Redefining,2024,2024
+duplicate_by_doi,10.1145/3726302.3730018,yang_knowing_2025,yang_knowing_2025,Knowing {You,Knowing {You,2025,2025
+duplicate_by_doi,10.1145/3686852.3686864,dakshit_faculty_2024,dakshit_faculty_2024,Faculty {Perspectives,Faculty perspectives on the potential of rag in computer science higher education,2024,2024
+duplicate_by_doi,10.1145/3709025.3712220,doyle_if_2025,doyle_if_2025,If {You,If {You,2025,2025
+duplicate_by_doi,10.1145/3726302.3730337,ross_rarr_2025,ross_rarr_2025,{RARR,{RARR,2025,2025
+duplicate_by_doi,10.1145/3726302.3729921,cui_cirag_2025,cui_cirag_2025,{CIRAG,{CIRAG,2025,2025
+duplicate_by_doi,10.1145/3711896.3736849,xin_atomr_2025,xin_atomr_2025,{AtomR,{AtomR,2025,2025
+duplicate_by_doi,10.1145/3699682.3728349,proma_personalizing_2025,proma_personalizing_2025,Personalizing {LLM,Personalizing {LLM,2025,2025
+duplicate_by_doi,10.1145/3701716.3717849,fuchs_practical_2025,fuchs_practical_2025,Practical {Fact,Practical {Fact,2025,2025
+duplicate_by_doi,10.1145/3726302.3730316,abbasiantaeb_conversational_2025,abbasiantaeb_conversational_2025,Conversational {Gold,Conversational {Gold,2025,2025
+duplicate_by_doi,10.1145/3726302.3730349,zhai_information_2025,zhai_information_2025,Information {Retrieval,Information {Retrieval,2025,2025
+duplicate_by_doi,10.1145/3643479.3662055,bui_cross-data_2024,bui_cross-data_2024,Cross-{Data,Cross-data knowledge graph construction for {LLM,2024,2024
+duplicate_by_doi,10.1145/3686397.3686420,sun_application_2024,sun_application_2024,The {Application,The {Application,2024,2024
+duplicate_by_doi,10.1145/3677389.3702523,datta_raging_2025,datta_raging_2025,Raging against the literature: {Llm,{RAGing,2025,2025
+duplicate_by_doi,10.1145/3698383.3699622,li_leveraging_2024,li_leveraging_2024,Leveraging {Prompt,Leveraging {Prompt,2024,2024
+duplicate_by_doi,10.1145/3635059.3635068,mamalis_can_2024,mamalis_can_2023,Can {Large,Can large language models revolutionalize open government data portals? a case of using chatgpt in statistics. gov. scot,2024,2023
+duplicate_by_doi,10.1145/3707292.3707358,liu_optimizing_2025,liu_optimizing_2025,Optimizing {RAG,Optimizing {RAG,2025,2025
+duplicate_by_doi,10.1145/3706598.3713749,wang_social-rag_2025,wang_social-rag_2025,Social-{RAG,Social-{RAG,2025,2025
+duplicate_by_doi,10.1145/3672608.3707894,pallucchini_self-explanatory_2025,pallucchini_self-explanatory_2025,Self-explanatory and {Retrieval,Self-explanatory and {Retrieval,2025,2025
+duplicate_by_doi,10.1145/3627673.3680094,gubanov_cancerkgorg_2024,gubanov_cancerkg_2024,{CancerKG,"Cancerkg. org-a web-scale, interactive, verifiable knowledge graph-llm hybrid for assisting with optimal cancer treatment and care",2024,2024
+duplicate_by_doi,10.1145/3626772.3657778,li_corpuslm_2024,li_corpuslm_2024,{CorpusLM,{CorpusLM,2024,2024
+duplicate_by_doi,10.1145/3627673.3679722,shi_retrieval-enhanced_2024,shi_retrieval-enhanced_2024,Retrieval-enhanced {Knowledge,Retrieval-enhanced {Knowledge,2024,2024
+duplicate_by_doi,10.1145/3661167.3661218,abedu_llm-based_2024,abedu_llm-based_2024,{LLM,Llm-based chatbots for mining software repositories: {Challenges,2024,2024
+duplicate_by_doi,10.1145/3701716.3715240,liang_kag_2025,liang_kag_2025,{KAG,{KAG,2025,2025
+duplicate_by_doi,10.1145/3695080.3695156,wei_garag_2024,wei_garag_2024,{GARAG,{GARAG,2024,2024
+duplicate_by_doi,10.1145/3704268.3742698,most_lost_2025,most_lost_2025,Lost in {OCR,Lost in {OCR,2025,2025
+duplicate_by_doi,10.1145/3630106.3658967,moayeri_worldbench_2024,moayeri_worldbench_2024,{WorldBench,Worldbench: {Quantifying,2024,2024
+duplicate_by_doi,10.1145/3640543.3645200,khurana_why_2024,khurana_why_2024,Why and {When,Why and when llm-based assistants can go wrong: {Investigating,2024,2024
+duplicate_by_doi,10.1145/3696230.3696247,malaborbor_enhancing_2024,malaborbor_enhancing_2024,Enhancing {Data,Enhancing {Data,2024,2024
+duplicate_by_doi,10.1145/3711896.3737374,chen_chineseecomqa_2025,chen_chineseecomqa_2025,{ChineseEcomQA,Chineseecomqa: {A,2025,2025
+duplicate_by_doi,10.1109/icse55347.2025.00101,lee_can_2025,lee_can_2025,Can an {LLM,Can an {LLM,2025,2025
+duplicate_by_doi,10.1145/3696630.3728560,yang_evaluating_2025,yang_evaluating_2025,Evaluating {Large,Evaluating {Large,2025,2025
+duplicate_by_doi,10.1145/3706598.3713448,li_omniquery_2025,li_omniquery_2025,{OmniQuery,{OmniQuery,2025,2025
+duplicate_by_doi,10.1145/3589334.3645363,xu_search---chain_2024,xu_search---chain_2024,Search-in-the-{Chain,Search-in-the-{Chain,2024,2024
+duplicate_by_doi,10.1145/3670474.3685953,xu_automated_2024,xu_automated_2024,Automated {C,Automated c/c++ program repair for high-level synthesis via large language models,2024,2024
+duplicate_by_doi,10.1145/3726302.3729898,zhang_ask_2025,zhang_ask_2025,Ask and {Retrieve,Ask and {Retrieve,2025,2025
+duplicate_by_doi,10.1145/3626772.3657784,zhang_are_2024,zhang_are_2024,Are {Large,Are {Large,2024,2024
+duplicate_by_doi,10.1145/3665601.3669848,einy_cost-effective_2024,einy_cost-effective_2024,Cost-{Effective,Cost-{Effective,2024,2024
+duplicate_by_doi,10.1145/3677052.3698597,cho_fishnet_2024,cho_fishnet_2024,{FISHNET,{FISHNET,2024,2024
+duplicate_by_doi,10.1109/bibm62325.2024.10821725,craig_whats_2024,craig_whats_2024,What's the data say? {An,What’s the data say? {An,2024,2024
+duplicate_by_doi,10.1109/iwceaa63616.2024.10823979,xu_chat_2024,xu_chat_2024,A {Chat,A {Chat,2024,2024
+duplicate_by_doi,10.1109/cost64302.2024.00038,hou_llm-based_2024,hou_llm-based_2024,{LLM,{LLM,2024,2024
+duplicate_by_doi,10.1109/cscwd64889.2025.11033484,guan_external_2025,guan_external_2025,From {External,From {External,2025,2025
+duplicate_by_doi,10.1109/access.2025.3535618,setyawan_soekamto_queries_2025,setyawan_soekamto_queries_2025,From {Queries,From {Queries,2025,2025
+duplicate_by_doi,10.1371/journal.pdig.0000568,soong_improving_2024,soong_improving_2024,Improving accuracy of {GPT,Improving accuracy of {GPT,2024,2024
+duplicate_by_title_to_kept,10.1145/3721201.3725426,garcia_df-rag_2025,garcia_df-rag_2025,{DF,{DF,2025,2025
+duplicate_by_title_to_kept,10.1145/3691620.3695054,liu_graphcoder_2024,liu_graphcoder_2024,{GraphCoder,{GraphCoder,2024,2024
+duplicate_by_title_to_kept,10.2196/66098,li_use_2025,li_use_2025,Use of {Retrieval,Use of {Retrieval,2025,2025
+duplicate_by_title_to_kept,10.18653/v1/2024.emnlp-industry.113,song_rag-hat_2024,song_rag-hat_2024,{RAG,{RAG,2024,2024
+duplicate_by_title_to_kept,10.3390/bdcc8090115,mansurova_qa-rag_2024,mansurova_qa-rag_2024,{QA,{QA,2024,2024
+duplicate_by_title_to_kept,10.1109/ICSES63445.2024.10762977,amarnath_intelligent_2024,amarnath_intelligent_2024,An {Intelligent,An {Intelligent,2024,2024
+duplicate_by_title_to_kept,10.1016/j.caeai.2025.100417,li_retrieval-augmented_2025,li_retrieval-augmented_2025,Retrieval-augmented generation for educational application: {A,Retrieval-augmented generation for educational application: {A,2025,2025
+duplicate_by_title_to_kept,10.1097/HEP.0000000000000834,ge_development_2024,ge_development_2024,Development of a liver disease–specific large language model chat interface using retrieval-augmented generation,Development of a liver disease-specific large language model chat interface using retrieval-augmented generation,2024,2024
+duplicate_by_title_to_kept,10.1038/s41746-025-01519-z,ke_retrieval_2025,ke_retrieval_2025,Retrieval augmented generation for 10 large language models and its generalizability in assessing medical fitness,Retrieval augmented generation for 10 large language models and its generalizability in assessing medical fitness,2025,2025
+duplicate_by_title_to_kept,10.3390/ai6080188,kuo_automated_2025,kuo_automated_2025,Automated {Clinical,Automated {Clinical,2025,2025
+duplicate_by_title_to_kept,10.5220/0012803100003767,kuppa_manipulating_2024,kuppa_manipulating_2024,Manipulating {Prompts,Manipulating {Prompts,2024,2024
+duplicate_by_title_to_kept,10.1109/FLLM63129.2024.10852474,nezafat_fake_2024,nezafat_fake_2024,Fake {News,Fake {News,2024,2024
+duplicate_by_title_to_kept,10.3390/inventions10040055,welsh_custom-tailored_2025,welsh_custom-tailored_2025,Custom-{Tailored,Custom-{Tailored,2025,2025
+duplicate_by_title_to_kept,10.3390/app15084234,swacha_retrieval-augmented_2025,swacha_retrieval-augmented_2025,Retrieval-{Augmented,Retrieval-{Augmented,2025,2025
+duplicate_by_title_to_kept,10.1109/UBMK63289.2024.10773428,ko_rerag_2024,ko_rerag_2024,{ReRag,{ReRag,2024,2024
+duplicate_by_title_to_kept,10.2196/67201,zhang_knowledge-enhanced_2025,zhang_knowledge-enhanced_2025,A {Knowledge,A {Knowledge,2025,2025
+duplicate_by_title_to_kept,10.3390/info16090786,mokashi_analysis_2025,mokashi_analysis_2025,Analysis of {Large,Analysis of {Large,2025,2025
+duplicate_by_title_to_kept,10.18653/v1/2024.findings-emnlp.730,thakur_knowing_2024,thakur_knowing_2024,“{Knowing,“{Knowing,2024,2024
+duplicate_by_title_to_kept,10.1038/s41746-024-01091-y,kresevic_optimization_2024,kresevic_optimization_2024,Optimization of hepatological clinical guidelines interpretation by large language models: a retrieval augmented generation-based framework,Optimization of hepatological clinical guidelines interpretation by large language models: a retrieval augmented generation-based framework,2024,2024
+duplicate_by_title_to_kept,10.1109/ACCESS.2025.3588337,praneeth_optimization_2025,praneeth_optimization_2025,Optimization of {Customer,Optimization of {Customer,2025,2025
+duplicate_by_title_to_kept,10.1109/eScience65000.2025.00087,azher_futuregen_2025,azher_futuregen_2025,{FutureGen,{FutureGen,2025,2025
+duplicate_by_title_to_kept,10.18653/v1/2024.emnlp-industry.97,sankararaman_provenance_2024,sankararaman_provenance_2024,Provenance: {A,Provenance: {A,2024,2024
+duplicate_by_title_to_kept,10.1109/ICOSST64562.2024.10871140,rani_enhance_2024,rani_enhance_2024,To {Enhance,To {Enhance,2024,2024
+duplicate_by_title_to_kept,10.1109/ICIC64337.2024.10957676,danuarta_retrieval-augmented_2024,danuarta_retrieval-augmented_2024,Retrieval-{Augmented,Retrieval-{Augmented,2024,2024
+duplicate_by_title_to_kept,10.1038/s41746-025-01802-z,wada_retrieval-augmented_2025,wada_retrieval-augmented_2025,Retrieval-augmented generation elevates local {LLM,Retrieval-augmented generation elevates local {LLM,2025,2025
+duplicate_by_title_to_kept,10.3390/electronics14020386,meng_using_2025,meng_using_2025,Using the {Retrieval,Using the {Retrieval,2025,2025
+duplicate_by_title_to_kept,10.1109/BigData62323.2024.10825910,roychowdhury_eratta_2024,roychowdhury_eratta_2024,{ERATTA,{ERATTA,2024,2024
+duplicate_by_title_to_kept,10.1016/j.bjps.2025.03.053,ozmen_evidence-based_2025,ozmen_evidence-based_2025,Evidence-based artificial intelligence: {Implementing,Evidence-based artificial intelligence: {Implementing,2025,2025
+duplicate_by_title_to_kept,10.69554/nxxb8234,bhattacharya_strategies_2024,bhattacharya_strategies_2024,Strategies to mitigate hallucinations in large language models,Strategies to mitigate hallucinations in large language models,2024,2024
+duplicate_by_title_to_kept,10.21037/aoj-24-49,eskenazi_evaluating_2025,eskenazi_evaluating_2025,Evaluating retrieval augmented generation and {ChatGPT,Evaluating retrieval augmented generation and {ChatGPT,2025,2025
+duplicate_by_title_to_kept,10.18653/v1/2024.findings-emnlp.794,yu_llms_2024,yu_llms_2024,{LLMs,{LLMs,2024,2024
+duplicate_by_title_to_kept,10.1145/3701716.3715244,wang_llm-based_2025,wang_llm-powered_2025,{LLM,{LLM,2025,2025
+duplicate_by_title_to_kept,10.1016/j.asoc.2025.113684,sun_humanmod_2025,sun_humanmod_2025,{HumanMoD,{HumanMoD,2025,2025
+duplicate_by_title_to_kept,10.31127/tuje.1624773,alan_improving_2025,alan_improving_2025,Improving {LLM,Improving {LLM,2025,2025
+duplicate_by_title_to_kept,10.1016/j.jbi.2024.104662,alkhalaf_applying_2024,alkhalaf_applying_2024,Applying generative {AI,Applying generative {AI,2024,2024
+duplicate_by_title_to_kept,10.14429/djlit.45.2.20206,mukhopadhyay_designing_2025,mukhopadhyay_designing_2025,Designing {Conversational,Designing {Conversational,2025,2025
+duplicate_by_title_to_kept,10.1038/s41598-024-81052-3,xu_evaluation_2024,xu_evaluation_2024,Evaluation of the integration of retrieval-augmented generation in large language model for breast cancer nursing care responses,Evaluation of the integration of retrieval-augmented generation in large language model for breast cancer nursing care responses,2024,2024
+duplicate_by_title_to_kept,10.1016/j.ssaho.2025.101751,nemeth_exploring_2025,nemeth_exploring_2025,Exploring the use of retrieval-augmented generation models in higher education: {A,Exploring the use of retrieval-augmented generation models in higher education: {A,2025,2025
+duplicate_by_title_to_kept,10.1109/SysCon64521.2025.11014810,aboulela_exploring_2025,aboulela_exploring_2025,Exploring {RAG,Exploring {RAG,2025,2025
+duplicate_by_title_to_kept,10.3390/app14209318,iaroshev_evaluating_2024,iaroshev_evaluating_2024,Evaluating {Retrieval,Evaluating {Retrieval,2024,2024
+duplicate_by_title_to_kept,10.3390/ebj6020028,genovese_data_2025,genovese_data_2025,From {Data,From {Data,2025,2025
+duplicate_by_title_to_kept,10.2196/60063,chen_eyegpt_2024,chen_eyegpt_2024,{EyeGPT,{EyeGPT,2024,2024
+duplicate_by_title_to_kept,10.1109/ICSTW64639.2025.10962487,ahmed_quality_2025,ahmed_quality_2025,Quality {Assurance,Quality {Assurance,2025,2025
+duplicate_by_title_to_kept,10.2514/6.2025-1916,ecker_trust-informed_2025,ecker_trust-informed_2025,Trust-{Informed,Trust-{Informed,2025,2025
+duplicate_by_title_to_kept,10.3390/app14177995,byun_design_2024,byun_design_2024,Design and {Implementation,Design and {Implementation,2024,2024
+duplicate_by_title_to_kept,10.1016/j.eswa.2025.127330,ren_large_2025,ren_large_2025,Large language model for interpreting research policy using adaptive two-stage retrieval augmented fine-tuning method,Large language model for interpreting research policy using adaptive two-stage retrieval augmented fine-tuning method,2025,2025
+duplicate_by_title_to_kept,10.1109/COMNETSAT63286.2024.10862926,putri_simplification_2024,putri_simplification_2024,Simplification of {Embedding,Simplification of {Embedding,2024,2024
+duplicate_by_title_to_kept,10.1016/j.ijmedinf.2025.106006,xu_development_2025,xu_development_2025,Development and evaluation of a retrieval-augmented large language model framework for enhancing endodontic education,Development and evaluation of a retrieval-augmented large language model framework for enhancing endodontic education,2025,2025
+duplicate_by_title_to_kept,10.1109/ACSACW65225.2024.00036,fayyazi_advancing_2024,fayyazi_advancing_2024,Advancing {TTP,Advancing {TTP,2024,2024
+duplicate_by_title_to_kept,10.1016/j.jos.2025.03.003,maruyama_retrieval-augmented_2025,maruyama_retrieval-augmented_2025,Retrieval-augmented generation enhances large language model performance on the {Japanese,Retrieval-augmented generation enhances large language model performance on the {Japanese,2025,2025
+duplicate_by_title_to_kept,10.1016/j.jvsvi.2024.100137,feridooni_development_2024,feridooni_development_2024,Development of a vascular surgery-specific artificial intelligence chat interface using retrieval-augmented generation: {VASC,Development of a vascular surgery-specific artificial intelligence chat interface using retrieval-augmented generation: {VASC,2024,2024
+duplicate_by_title_to_kept,10.1016/j.jobe.2025.112189,wang_improving_2025,wang_improving_2025,Improving knowledge management in building engineering with hybrid retrieval-augmented generation framework,Improving knowledge management in building engineering with hybrid retrieval-augmented generation framework,2025,2025
+duplicate_by_title_to_kept,10.3390/jcm14072450,shin_thyro-genai_2025,shin_thyro-genai_2025,Thyro-{GenAI,Thyro-{GenAI,2025,2025
+duplicate_by_title_to_kept,10.1093/jamia/ocae129,li_refai_2024,li_refai_2024,{RefAI,{RefAI,2024,2024
+duplicate_by_title_to_kept,10.1109/FIE61694.2024.10893146,gopi_enhancing_2024,gopi_enhancing_2024,Enhancing {Engineering,Enhancing {Engineering,2024,2024
+duplicate_by_title_to_kept,10.3390/app142411529,chen_enhanced_2024,chen_enhanced_2024,An {Enhanced,An {Enhanced,2024,2024
+duplicate_by_title_to_kept,10.2118/222032-MS,palaniappan_enhancing_2024,palaniappan_enhancing_2024,Enhancing {Enterprise,Enhancing {Enterprise,2024,2024
+duplicate_by_title_to_kept,10.1016/j.isci.2025.112492,hamed_knowledge_2025,hamed_knowledge_2025,From knowledge generation to knowledge verification: examining the biomedical generative capabilities of {ChatGPT,From knowledge generation to knowledge verification: examining the biomedical generative capabilities of {ChatGPT,2025,2025
+duplicate_by_title_to_kept,10.1093/bioinformatics/btae353,matsumoto_kragen_2024,matsumoto_kragen_2024,{KRAGEN,{KRAGEN,2024,2024
+duplicate_by_title_to_kept,10.1016/j.jss.2025.112436,yang_ragva_2025,yang_ragva_2025,{RAGVA,{RAGVA,2025,2025
+duplicate_by_title_to_kept,10.48550/arXiv.2407.00541,low_answering_2024,low_answering_2024,Answering real-world clinical questions using large language model based systems,Answering real-world clinical questions using large language model based systems,2024,2024
+duplicate_by_title_to_kept,10.30420/566438009,quddus_enhanced_2024,quddus_enhanced_2024,Enhanced {VLSI,Enhanced {VLSI,2024,2024
+duplicate_by_title_to_kept,10.3390/technologies13040140,farias_chatbot_2025,farias_chatbot_2025,Chatbot {Based,Chatbot {Based,2025,2025
+duplicate_by_title_to_kept,10.69554/yqbv7690,earley_what_2023,earley_what_2023,"What executives need to know about knowledge management, large language models and generative {AI","What executives need to know about knowledge management, large language models and generative {AI",2023,2023
+duplicate_by_title_to_kept,10.1109/ACTEA66485.2025.11189974,serhan_vulnerabilities_2025,serhan_vulnerabilities_2025,Vulnerabilities of a {Medical,Vulnerabilities of a {Medical,2025,2025
+duplicate_by_title_to_kept,10.1109/URTC65039.2024.10937570,sng_novel_2024,sng_novel_2024,A {Novel,A {Novel,2024,2024
+duplicate_by_title_to_kept,10.1109/MCOM.001.2400774,zeeshan_llm-based_2025,zeeshan_llm-based_2025,{LLM,{LLM,2025,2025
+duplicate_by_title_to_kept,10.1093/bioinformatics/btae679,craig_lmrac_2024,craig_lmrac_2024,{LmRaC,{LmRaC,2024,2024
+duplicate_by_title_to_kept,10.1109/BESC64747.2024.10780718,leung_rag_2024,leung_rag_2024,{RAG,{RAG,2024,2024
+duplicate_by_title_to_kept,10.1109/ACCESS.2024.3485877,xu_chattf_2024,xu_chattf_2024,{ChatTf,{ChatTf,2024,2024
+duplicate_by_title_to_kept,10.2196/73698,temsah_authors_2025,temsah_authors_2025,Authors' {Reply,Authors’ {Reply,2025,2025
+duplicate_by_title_to_kept,10.17770/etr2025vol2.8603,stankov_application_2025,stankov_application_2025,Application of a {Large,Application of a {Large,2025,2025
+duplicate_by_title_to_kept,10.1038/s41405-025-00338-4,umer_transforming_2025,umer_transforming_2025,Transforming education: tackling the two sigma problem with {AI,Transforming education: tackling the two sigma problem with {AI,2025,2025
+duplicate_by_title_to_kept,10.1109/UBMK63289.2024.10773564,sahin_llm_2024,sahin_llm_2024,{LLM,{LLM,2024,2024
+duplicate_by_title_to_kept,10.1109/MDM65600.2025.00035,koh_clara_2025,koh_clara_2025,Clara: {Context,Clara: {Context,2025,2025
+duplicate_by_title_to_kept,10.18653/v1/2024.emnlp-main.552,laban_summary_2024,laban_summary_2024,Summary of a haystack: {A,Summary of a {Haystack,2024,2024
+duplicate_by_title_to_kept,10.1145/3728894,zhang_llm-lasso_2025,zhang_llm_2025,{LLM,{LLM,2025,2025
+duplicate_by_title_to_kept,10.1145/3701716.3715520,lee_rag-enhanced_2025,lee_rag-enhanced_2025,{RAG,{RAG,2025,2025
+duplicate_by_title_to_kept,10.1109/SLT61566.2024.10832316,lin_domain_2024,lin_domain_2024,Domain {Adaption,Domain {Adaption,2024,2024
+duplicate_by_title_to_kept,10.1016/j.cogsys.2025.101337,soman_human_2025,soman_human_2025,Human guided empathetic {AI,Human guided empathetic {AI,2025,2025
+duplicate_by_title_to_kept,10.1109/NILES63360.2024.10753267,ahmed_codeqa_2024,ahmed_codeqa_2024,{CodeQA,{CodeQA,2024,2024
+duplicate_by_title_to_kept,10.1016/j.inffus.2025.103328,qu_pncd_2025,qu_pncd_2025,{PNCD,{PNCD,2025,2025
+duplicate_by_title_to_kept,10.3390/math13122023,li_combining_2025,li_combining_2025,Combining {Lexicon,Combining {Lexicon,2025,2025
+duplicate_by_title_to_kept,10.1109/ICDEW67478.2025.00033,cheung_hallucination_2025,cheung_hallucination_2025,Hallucination {Detection,Hallucination {Detection,2025,2025
+duplicate_by_title_to_kept,10.1109/ISRITI64779.2024.10963661,ongris_towards_2024,ongris_towards_2024,Towards an {Open,Towards an {Open,2024,2024
+duplicate_by_title_to_kept,10.1109/ICoCSETI63724.2025.11018908,sanjani_performance_2025,sanjani_performance_2025,Performance {Analysis,Performance {Analysis,2025,2025
+duplicate_by_title_to_kept,10.1109/OCIT65031.2024.00058,kumari_innovative_2024,kumari_innovative_2024,Innovative {Corporate,Innovative {Corporate,2024,2024
+duplicate_by_title_to_kept,10.1109/TPS-ISA62245.2024.00021,garza_privcomp-kg_2024,garza_privcomp-kg_2024,{PrivComp,{PrivComp,2024,2024
+duplicate_by_title_to_kept,10.24507/ijicic.21.02.481,hong_innovative_2025,hong_innovative_2025,{INNOVATIVE,{INNOVATIVE,2025,2025
+duplicate_by_title_to_kept,10.1109/CAIN66642.2025.00049,ayala_task_2025,ayala_task_2025,Task {Decomposition,Task {Decomposition,2025,2025
+duplicate_by_title_to_kept,10.1109/ICAA64256.2024.00024,okutan_leveraging_2024,okutan_leveraging_2024,Leveraging {RAG,Leveraging {RAG,2024,2024
+duplicate_by_title_to_kept,10.18653/v1/2024.emnlp-main.1196,zhang_synthetic_2024,zhang_synthetic_2024,Synthetic {Knowledge,Synthetic {Knowledge,2024,2024
+duplicate_by_title_to_kept,10.1016/j.fsidi.2025.301872,sharma_forensicllm_2025,sharma_forensicllm_2025,{ForensicLLM,{ForensicLLM,2025,2025
+duplicate_by_title_to_kept,10.1145/3731569.3764806,hu_hedrarag_2025,hu_hedrarag_2025,{HedraRAG,{HedraRAG,2025,2025
+duplicate_by_title_to_kept,10.1093/bib/bbaf045,cinquin_steering_2025,cinquin_steering_2025,Steering veridical large language model analyses by correcting and enriching generated database queries: first steps toward {ChatGPT,Steering veridical large language model analyses by correcting and enriching generated database queries: first steps toward {ChatGPT,2025,2025
+duplicate_by_title_to_kept,10.1109/ICDE60146.2024.00430,rorseth_rage_2024,rorseth_rage_2024,{RAGE,{RAGE,2024,2024
+duplicate_by_title_to_kept,10.3390/fi16120462,zhang_generative_2024,zhang_generative_2024,Generative {AI,Generative {AI,2024,2024
+duplicate_by_title_to_kept,10.1109/LAD62341.2024.10691715,lin_novel_2024,lin_novel_2024,Novel {Preprocessing,Novel {Preprocessing,2024,2024
+duplicate_by_title_to_kept,10.1016/j.cose.2025.104458,sezgin_decoypot_2025,sezgin_decoypot_2025,{DecoyPot,{DecoyPot,2025,2025
+duplicate_by_title_to_kept,10.1109/COMPSAC61105.2024.00135,yu_textual_2024,yu_textual_2024,Textual {Differential,Textual {Differential,2024,2024
+duplicate_by_title_to_kept,10.1109/SmartGridComm60555.2024.10738062,fortuna_natural_2024,fortuna_natural_2024,Natural {Language,Natural {Language,2024,2024
+duplicate_by_title_to_kept,10.1109/ICAIRC64177.2024.10900148,hsu_addressing_2024,hsu_addressing_2024,Addressing {LLM,Addressing {LLM,2024,2024
+duplicate_by_title_to_kept,10.18653/v1/2024.acl-long.557,fernandez_syllabusqa_2024,fernandez_syllabusqa_2024,{SyllabusQA,{SYLLABUSQA,2024,2024
+duplicate_by_title_to_kept,10.1038/s41746-025-01475-8,goodell_large_2025,goodell_large_2025,Large language model agents can use tools to perform clinical calculations,Large language model agents can use tools to perform clinical calculations,2025,2025
+duplicate_by_title_to_kept,10.3390/electronics14193859,null_notitle_2025-2,null_notitle_2025,,,2025,2025
+duplicate_by_title_to_kept,10.18653/v1/2024.customnlp4u-1.13,zhu_trustful_2024,zhu_trustful_2024,Trustful {LLMs,Trustful {LLMs,2024,2024
+duplicate_by_title,,ma_think--graph_2024-1,ma_think--graph_2024,Think-on-graph 2.0: {Deep,Think-on-graph 2.0: {Deep,2024,2024
+duplicate_by_title,,noauthor_proceedings_2024-2,noauthor_proceedings_2024-1,Proceedings - 2024 {International,Proceedings - 2024 {International,2024,2024
