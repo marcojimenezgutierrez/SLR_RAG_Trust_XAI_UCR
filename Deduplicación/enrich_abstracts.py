@@ -8,8 +8,10 @@ from openai import OpenAI
 from tenacity import retry, stop_after_attempt, wait_exponential
 from langdetect import detect
 
-# Load env
-load_dotenv()
+# Load env (cargar desde la raíz del repo para soportar ejecución desde subcarpetas)
+REPO_ROOT = Path(__file__).resolve().parents[1]
+load_dotenv(REPO_ROOT / '.env', encoding='utf-8-sig')
+load_dotenv(override=False, encoding='utf-8-sig')  # también desde CWD para permitir overrides locales
 OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
 HTTP_REFERER = os.getenv('OPENROUTER_SITE_URL','')
 X_TITLE = os.getenv('OPENROUTER_APP_NAME','SLR Abstract Enricher')
@@ -18,6 +20,7 @@ X_TITLE = os.getenv('OPENROUTER_APP_NAME','SLR Abstract Enricher')
 LANG_POLICY = 'preserve'
 TARGET_WORDS = (120, 200)
 MIN_CHARS = 400
+MIN_KEYWORDS = 2
 KEYWORDS = [
     'rag', 'retrieval-augmented', 'llm', 'large language model',
     'hallucination', 'faithfulness', 'factuality', 'trust', 'confidence', 'credibility',
@@ -58,15 +61,15 @@ def pick_language(text):
     except Exception:
         return 'en'
 
-def needs_enrichment(abstract):
+def needs_enrichment(abstract, min_chars: int, min_keywords: int) -> bool:
     if not abstract:
         return True
     t = abstract.strip()
-    if len(t) < MIN_CHARS:
+    if len(t) < min_chars:
         return True
     lower = t.lower()
     found = sum(1 for k in KEYWORDS if k in lower)
-    return found < 2
+    return found < min_keywords
 
 def build_prompt(title, abstract, lang):
     goal = f"Expand and refine the abstract to be concise, specific, and faithful. Target {TARGET_WORDS[0]}-{TARGET_WORDS[1]} words."
@@ -258,7 +261,10 @@ def _balance_braces(value):
     return value
 
 
-def enrich_bib(in_path, out_path, audit_path, state_path, model, fallbacks, dry_run=False, resume=False, force_retry=False):
+def enrich_bib(in_path, out_path, audit_path, state_path, model, fallbacks,
+               dry_run=False, resume=False, force_retry=False,
+               min_chars=MIN_CHARS, min_keywords=MIN_KEYWORDS,
+               enrich_all=False):
     ensure_parent(out_path)
     ensure_parent(audit_path)
     ensure_parent(state_path)
@@ -282,7 +288,7 @@ def enrich_bib(in_path, out_path, audit_path, state_path, model, fallbacks, dry_
             append_state(state_path, {'key': key, 'status': 'skipped', 'reason': 'resume', 'ts': time.time()})
             continue
 
-        if not needs_enrichment(abstract):
+        if not enrich_all and not needs_enrichment(abstract, min_chars, min_keywords):
             append_state(state_path, {'key': key, 'status': 'skipped', 'reason': 'sufficient', 'ts': time.time()})
             continue
 
@@ -329,6 +335,25 @@ if __name__ == '__main__':
     p.add_argument('--force-retry', action='store_true')
     p.add_argument('--model', default='xai/grok-2-mini')
     p.add_argument('--fallbacks', default='openai/gpt-4o-mini,anthropic/claude-3.5-sonnet')
+    p.add_argument('--min-chars', type=int, default=MIN_CHARS,
+                   help='Caracteres mínimos del abstract para considerarlo suficiente (por defecto 400).')
+    p.add_argument('--min-keywords', type=int, default=MIN_KEYWORDS,
+                   help='Número mínimo de keywords detectadas para evitar enriquecimiento (por defecto 2).')
+    p.add_argument('--enrich-all', action='store_true',
+                   help='Forzar enriquecimiento de todas las entradas, sin aplicar heurísticas.')
     args = p.parse_args()
     fallbacks = [x.strip() for x in args.fallbacks.split(',') if x.strip()]
-    enrich_bib(args.input, args.out, args.audit, args.state, args.model, fallbacks, dry_run=args.dry_run, resume=args.resume, force_retry=args.force_retry)
+    enrich_bib(
+        args.input,
+        args.out,
+        args.audit,
+        args.state,
+        args.model,
+        fallbacks,
+        dry_run=args.dry_run,
+        resume=args.resume,
+        force_retry=args.force_retry,
+        min_chars=max(0, args.min_chars),
+        min_keywords=max(0, args.min_keywords),
+        enrich_all=args.enrich_all,
+    )
