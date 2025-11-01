@@ -1,0 +1,14 @@
+Total entradas procesadas: 3
+Número de Include: 1
+Número de Exclude: 2
+Número de Maybe: 0
+Distribución por relevancia:
+  Excluir: 2
+  Baja: 0
+  Media: 0
+  Alta: 1
+Conteo de menciones por RQ:
+  RQ1: 1
+  RQ2: 1
+  RQ3: 1
+  RQ4: 1
