@@ -5,9 +5,12 @@ import argparse
 import csv
 import sys
 import re
+import logging
+from logging.handlers import RotatingFileHandler
+from typing import Optional, Tuple, Union
 from datetime import datetime
 from pathlib import Path
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 
 import httpx
 from bs4 import BeautifulSoup
@@ -18,6 +21,7 @@ from bibtexparser.bibdatabase import BibDatabase
 from openai import OpenAI
 from tenacity import retry, stop_after_attempt, wait_exponential
 from langdetect import detect
+import tldextract
 
 # Load env (cargar desde la raíz del repo para soportar ejecución desde subcarpetas)
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -36,6 +40,9 @@ USER_AGENT = (
     else 'abstract-enricher/1.0 (+mailto:unknown@example.com)'
 )
 HTTP_TIMEOUT = 30
+
+# Logger global para bitácora
+LOGGER = logging.getLogger('enrich_abstracts')
 
 # Policies
 LANG_POLICY = 'preserve'
@@ -60,6 +67,11 @@ KEYWORDS = [
     'instrument', 'questionnaire', 'scale', 'survey', 'user study',
     'benchmark', 'dataset', 'guideline', 'framework', 'pipeline'
 ]
+
+# Denylist de hosts donde evitamos scraping HTML directo por políticas/TOS
+DENYLIST_HOSTS = {
+    'dl.acm.org',
+}
 
 sys.setrecursionlimit(max(5000, sys.getrecursionlimit()))
 
@@ -131,41 +143,121 @@ def _build_headers():
     return {'User-Agent': USER_AGENT}
 
 
+def _build_doi_json_headers():
+    h = _build_headers()
+    h['Accept'] = 'application/vnd.citationstyles.csl+json'
+    return h
+
+
+def _ensure_dir(p: Union[Path, str]):
+    Path(p).mkdir(parents=True, exist_ok=True)
+
+
+def _next_log_file(log_dir: Path, prefix: str = 'enrich_abstracts_log') -> Path:
+    date = datetime.now().strftime('%Y%m%d')
+    seq = 1
+    while True:
+        fname = f"{prefix}_{date}_{seq:03d}.log"
+        candidate = log_dir / fname
+        if not candidate.exists():
+            return candidate
+        seq += 1
+
+
+def setup_logging(log_dir: str = 'logs', level: str = 'INFO') -> Path:
+    """Configura logging a consola y archivo diario incremental.
+
+    - Consola: nivel INFO por defecto.
+    - Archivo: nivel DEBUG, nombre enrich_abstracts_log_YYYYMMDD_XXX.log en `log_dir`.
+    Devuelve la ruta del archivo de log.
+    """
+    # Limpiar handlers previos si se re-invoca
+    if LOGGER.handlers:
+        for h in list(LOGGER.handlers):
+            LOGGER.removeHandler(h)
+
+    LOGGER.setLevel(logging.DEBUG)
+
+    _ensure_dir(log_dir)
+    log_dir_path = Path(log_dir)
+    logfile = _next_log_file(log_dir_path)
+
+    # Console handler
+    ch = logging.StreamHandler()
+    level_map = {
+        'CRITICAL': logging.CRITICAL,
+        'ERROR': logging.ERROR,
+        'WARNING': logging.WARNING,
+        'INFO': logging.INFO,
+        'DEBUG': logging.DEBUG,
+        'NOTSET': logging.NOTSET,
+    }
+    ch.setLevel(level_map.get(level.upper(), logging.INFO))
+    ch.setFormatter(logging.Formatter('[%(asctime)s] %(levelname)s: %(message)s', datefmt='%H:%M:%S'))
+
+    # File handler (rotating; 10MB x 3)
+    fh = RotatingFileHandler(logfile, maxBytes=10 * 1024 * 1024, backupCount=3, encoding='utf-8')
+    fh.setLevel(logging.DEBUG)
+    fh.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(name)s %(filename)s:%(lineno)d - %(message)s'))
+
+    LOGGER.addHandler(ch)
+    LOGGER.addHandler(fh)
+    LOGGER.propagate = False
+
+    LOGGER.info('Bitácora inicializada. Archivo: %s', logfile)
+    return logfile
+
+
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(min=1, max=8), reraise=True)
-def fetch_crossref_abstract(doi: str) -> tuple[str, str]:
+def fetch_crossref_abstract(doi: str) -> Tuple[str, str]:
     doi = (doi or '').strip()
     if not doi:
         return '', 'none'
     encoded = quote(doi)
     url = f'https://api.crossref.org/works/{encoded}'
     try:
+        LOGGER.debug('Consultando Crossref para DOI=%s', doi)
         response = httpx.get(url, headers=_build_headers(), timeout=HTTP_TIMEOUT, follow_redirects=True)
         response.raise_for_status()
     except httpx.HTTPStatusError as exc:
         # 4xx responses (e.g. missing DOI) are not retriable; surface as empty result.
         if exc.response is not None and 400 <= exc.response.status_code < 500:
+            LOGGER.info('Crossref sin abstract (HTTP %s) para DOI=%s', exc.response.status_code, doi)
             return '', 'none'
+        LOGGER.warning('Error HTTP en Crossref para DOI=%s; reintentando...', doi)
         raise
     data = {}
     try:
         data = response.json()
     except ValueError:
+        LOGGER.warning('Respuesta Crossref no-JSON para DOI=%s', doi)
         return '', 'none'
     message = data.get('message', {}) if isinstance(data, dict) else {}
     raw = message.get('abstract') or ''
     cleaned = strip_jats(raw)
     if is_valid_abs(cleaned):
+        LOGGER.info('Abstract válido obtenido desde Crossref (len=%d) para DOI=%s', len(cleaned), doi)
         return cleaned, 'crossref'
     return '', 'none'
 
 
-def fetch_url_abstract(url: str) -> tuple[str, str]:
+def fetch_url_abstract(url: str) -> Tuple[str, str]:
     if not ENABLE_SCRAPING or not url:
         return '', 'none'
+    # Evita scraping para hosts en denylist
     try:
+        host = urlparse(url).netloc.lower()
+    except Exception:
+        host = ''
+    if host in DENYLIST_HOSTS:
+        LOGGER.info('Scraping HTML deshabilitado para host en denylist: %s', host)
+        return '', 'none'
+    try:
+        LOGGER.debug('Extrayendo abstract desde URL=%s', url)
         response = httpx.get(url, headers=_build_headers(), timeout=HTTP_TIMEOUT, follow_redirects=True)
         response.raise_for_status()
     except Exception:
+        LOGGER.info('No fue posible extraer abstract desde URL=%s', url)
         return '', 'none'
     soup = BeautifulSoup(response.text or '', 'lxml')
 
@@ -185,6 +277,7 @@ def fetch_url_abstract(url: str) -> tuple[str, str]:
         content = tag.get('content') or tag.get('value') or ''
         cleaned = strip_jats(content)
         if is_valid_abs(cleaned):
+            LOGGER.info('Abstract válido obtenido desde metadatos (len=%d) URL=%s', len(cleaned), url)
             return cleaned, 'meta'
 
     html_selectors = [
@@ -212,14 +305,44 @@ def fetch_url_abstract(url: str) -> tuple[str, str]:
                 pieces.append(cleaned_chunk)
         candidate = normalize_whitespace(' '.join(pieces))
         if is_valid_abs(candidate):
+            LOGGER.info('Abstract válido obtenido desde HTML (len=%d) URL=%s', len(candidate), url)
             return candidate, 'html'
 
     return '', 'none'
 
 
-def get_abstract_via_crossref_then_url(doi: str | None, url: str | None) -> tuple[str, str]:
+def fetch_doi_json_abstract(doi: str) -> Tuple[str, str]:
+    doi = (doi or '').strip()
+    if not doi:
+        return '', 'none'
+    encoded = quote(doi)
+    url = f'https://doi.org/{encoded}'
+    try:
+        LOGGER.debug('Consultando DOI JSON para DOI=%s', doi)
+        response = httpx.get(url, headers=_build_doi_json_headers(), timeout=HTTP_TIMEOUT, follow_redirects=True)
+        response.raise_for_status()
+    except Exception as e:
+        LOGGER.info('DOI JSON no disponible para DOI=%s (%s)', doi, e)
+        return '', 'none'
+    try:
+        data = response.json()
+    except Exception:
+        return '', 'none'
+    abstract = ''
+    if isinstance(data, dict):
+        abstract = data.get('abstract') or ''
+    cleaned = strip_jats(abstract)
+    if is_valid_abs(cleaned):
+        LOGGER.info('Abstract válido obtenido desde DOI JSON (len=%d) para DOI=%s', len(cleaned), doi)
+        return cleaned, 'doi-json'
+    return '', 'none'
+
+
+def get_abstract_via_crossref_then_url(doi: Optional[str], url: Optional[str]) -> Tuple[str, str]:
     doi = (doi or '').strip()
     url = (url or '').strip()
+
+    # 1) Intento por Crossref usando DOI
     if doi:
         try:
             abstract, source = fetch_crossref_abstract(doi)
@@ -227,10 +350,27 @@ def get_abstract_via_crossref_then_url(doi: str | None, url: str | None) -> tupl
             abstract, source = '', 'none'
         if abstract:
             return abstract, source
+
+    # 2) Intento por DOI JSON (content negotiation)
+    if doi:
+        abs_doi, src_doi = fetch_doi_json_abstract(doi)
+        if abs_doi:
+            return abs_doi, src_doi
+
+    # 3) Intento por URL proporcionada
     if url:
         abstract, source = fetch_url_abstract(url)
         if abstract:
             return abstract, source
+
+    # 4) Intento por URL construida del DOI (https://doi.org/...) si no hubo suerte y hay DOI
+    if doi:
+        doi_url = f"https://doi.org/{doi}"
+        LOGGER.info('Intentando extracción desde URL de DOI: %s', doi_url)
+        abstract, source = fetch_url_abstract(doi_url)
+        if abstract:
+            return abstract, source
+
     return '', 'none'
 
 
@@ -252,13 +392,23 @@ def needs_enrichment(abstract, min_chars: int, min_keywords: int) -> bool:
     return found < min_keywords
 
 
-def build_prompt(title, abstract, lang):
-    goal = f"Expand and refine the abstract to be concise, specific, and faithful. Target {TARGET_WORDS[0]}-{TARGET_WORDS[1]} words."
-    policy = 'Preserve the original language.' if LANG_POLICY == 'preserve' else f'Write in {lang}.'
-    kws = ', '.join(KEYWORDS[:20]) + ', ...'
-    hints = 'Include concrete contributions, methods, datasets, and evaluation metrics when available. Avoid speculation.'
-    user = f"Title: {title or ''}\nOriginal abstract:\n{abstract or ''}\n\nKeywords of interest: {kws}"
-    system = f"You are an expert research editor. {policy} {goal} {hints}"
+def build_prompt(doi: Optional[str], url: Optional[str]):
+    """Crea un prompt para pedir al LLM solamente el abstract extraído del DOI o URL.
+
+    Nota: Los LLM de OpenRouter no pueden navegar; este prompt solo sirve si
+    el modelo tiene contexto de texto (p. ej., si se le adjuntara contenido).
+    """
+    doi = (doi or '').strip()
+    url = (url or '').strip()
+    system = (
+        "You are a precise assistant. Extract only the publication abstract. "
+        "Do not add commentary, headings, quotes, or extra text. "
+        "Preserve the original language of the abstract."
+    )
+    user = (
+        f"Extract the abstract from the DOI: {doi} or the URL: {url}. "
+        "Return only the abstract text in its original language."
+    )
     return system, user
 
 
@@ -267,17 +417,25 @@ def call_with_fallbacks(model, fallbacks, system, user):
     last_err = None
     for m in models:
         try:
+            LOGGER.info('Invocando LLM: %s', m)
             resp = chat_complete(m, system, user)
             content = resp.choices[0].message.content.strip()
             if content:
+                LOGGER.info('LLM OK: %s (len=%d)', m, len(content))
                 return content, m
         except Exception as e:
             last_err = e
+            LOGGER.warning('LLM error con %s: %s', m, e)
             time.sleep(1.5)
     raise last_err or RuntimeError('All models failed')
 
 
 def load_state(state_path):
+    """Carga claves ya procesadas desde un archivo de estado JSONL.
+
+    Considera como procesadas las entradas con status en {'enriched','fetched','skipped'}.
+    Ignora 'error'.
+    """
     done = set()
     p = Path(state_path)
     if p.exists():
@@ -285,11 +443,32 @@ def load_state(state_path):
             for line in f:
                 try:
                     obj = json.loads(line)
-                    if obj.get('status') == 'enriched':
-                        done.add(obj.get('key'))
+                    status = obj.get('status')
+                    if status in {'enriched', 'fetched', 'skipped'}:
+                        k = obj.get('key')
+                        if k:
+                            done.add(k)
                 except Exception:
                     pass
     return done
+
+
+def _resolve_resume_state_path(state_path: str) -> str:
+    """Si el archivo de estado no existe, intenta resolver el más reciente
+    que coincida con el patrón base: <stem>_YYYYMMDD_XXX.jsonl en el mismo directorio.
+    """
+    p = Path(state_path)
+    if p.exists():
+        return str(p)
+    parent = p.parent
+    stem = p.stem
+    # Elimina sufijo _YYYYMMDD_XXX si viene incluido
+    base_stem = re.sub(r'_\d{8}_\d{3}$', '', stem)
+    candidates = sorted(parent.glob(f"{base_stem}_*.jsonl"), key=lambda x: x.stat().st_mtime, reverse=True)
+    for c in candidates:
+        if c.exists() and c.is_file():
+            return str(c)
+    return str(p)
 
 
 def append_state(state_path, obj):
@@ -472,8 +651,16 @@ def enrich_bib(
     ensure_parent(audit_path)
     ensure_parent(state_path)
 
-    done_keys = load_state(state_path) if resume and not force_retry else set()
+    if resume and not force_retry:
+        resume_src = _resolve_resume_state_path(state_path)
+        if resume_src != state_path:
+            LOGGER.info('Reanudación: usando estado previo %s', resume_src)
+        done_keys = load_state(resume_src)
+    else:
+        done_keys = set()
+    LOGGER.info('Cargando base BibTeX desde %s', in_path)
     db = load_bib_database(in_path)
+    LOGGER.info('Entradas cargadas: %d', len(db.entries))
 
     writer = BibTexWriter()
     writer.order_entries_by = ('ID',)
@@ -488,10 +675,12 @@ def enrich_bib(
         abstract = entry.get('abstract', '') or entry.get('annotation', '') or ''
 
         if resume and key in done_keys:
+            LOGGER.debug('Saltando (resume) %s', key)
             append_state(state_path, {'key': key, 'status': 'skipped', 'reason': 'resume', 'ts': time.time()})
             continue
 
         if not enrich_all and not needs_enrichment(abstract, min_chars, min_keywords):
+            LOGGER.debug('Suficiente, no enriquecer: %s (len=%d)', key, len(abstract or ''))
             append_state(state_path, {'key': key, 'status': 'skipped', 'reason': 'sufficient', 'ts': time.time()})
             continue
 
@@ -507,6 +696,7 @@ def enrich_bib(
         url = url_field if url_field.lower().startswith('http') else ''
 
         if (enrich_all or not original_abstract or OVERWRITE_IF_BETTER) and (doi or url):
+            LOGGER.info('Intentando obtener abstract vía Crossref/URL para %s (doi=%s url=%s)', key, doi, url)
             fetched_abs, fetched_source = get_abstract_via_crossref_then_url(doi, url)
             if fetched_abs and score_abstract(fetched_abs) > current_score:
                 entry['abstract'] = fetched_abs
@@ -516,35 +706,58 @@ def enrich_bib(
                 entry['x_enrich_status'] = 'fetched'
                 entry['x_enrich_source'] = fetched_source
                 entry['x_enrich_ts'] = now_iso()
+                LOGGER.info('Abstract mejorado por %s para %s (old=%d new=%d)', fetched_source, key, original_length, len(fetched_abs))
                 audit_rows.append([key, 'fetched', original_length, len(fetched_abs), lang, fetched_source])
                 append_state(state_path, {'key': key, 'status': 'fetched', 'source': fetched_source, 'ts': time.time()})
                 changed += 1 if fetched_abs != original_abstract else 0
                 continue
 
         lang = pick_language((abstract or title) or '')
-        system, user = build_prompt(title, abstract, lang)
+        system, user = build_prompt(doi, url)
 
-        if dry_run or client is None:
+        if dry_run:
             enriched = abstract or ''
             used_model = None
             status = 'dry-run'
+        elif client is None:
+            # Sin cliente LLM disponible: si no hay abstract original, coloca marcador explícito
+            if not original_abstract:
+                enriched = 'NO_ABSTRACT_FOUND'
+                used_model = None
+                status = 'no-abstract'
+            else:
+                enriched = abstract or ''
+                used_model = None
+                status = 'skipped-llm'
         else:
             try:
                 enriched, used_model = call_with_fallbacks(model, fallbacks, system, user)
                 status = 'enriched'
             except Exception as e:
-                append_state(state_path, {'key': key, 'status': 'error', 'error': str(e), 'ts': time.time()})
-                continue
+                LOGGER.error('Fallo enriqueciendo %s: %s', key, e)
+                if not original_abstract:
+                    # Si no había abstract y el LLM falla, marca explícitamente no encontrado
+                    enriched = 'NO_ABSTRACT_FOUND'
+                    used_model = None
+                    status = 'no-abstract'
+                else:
+                    append_state(state_path, {'key': key, 'status': 'error', 'error': str(e), 'ts': time.time()})
+                    continue
 
         if enriched and enriched != abstract:
             entry['abstract'] = enriched
-            lang = pick_language(enriched)
+            # Para el marcador explícito, no intentamos detectar idioma
+            lang = 'und' if enriched == 'NO_ABSTRACT_FOUND' else pick_language(enriched)
             entry['abstract_lang'] = lang
-            entry['abstract_source'] = used_model or 'llm'
-            entry['x_enrich_status'] = 'ok'
-            entry['x_enrich_source'] = used_model or 'llm'
+            entry['abstract_source'] = (used_model or 'none') if enriched == 'NO_ABSTRACT_FOUND' else (used_model or 'llm')
+            entry['x_enrich_status'] = 'not_found' if enriched == 'NO_ABSTRACT_FOUND' else 'ok'
+            entry['x_enrich_source'] = (used_model or 'none') if enriched == 'NO_ABSTRACT_FOUND' else (used_model or 'llm')
             entry['x_enrich_ts'] = now_iso()
             changed += 1
+            if enriched == 'NO_ABSTRACT_FOUND':
+                LOGGER.info('Sin abstract tras intentos para %s; marcado NO_ABSTRACT_FOUND', key)
+            else:
+                LOGGER.info('Enriquecido por LLM %s para %s (old=%d new=%d)', used_model, key, original_length, len(enriched))
 
         audit_rows.append([
             key,
@@ -558,12 +771,15 @@ def enrich_bib(
 
     with open(out_path, 'w', encoding='utf-8') as f:
         bibtexparser.dump(db, f)
+    LOGGER.info('Archivo BibTeX guardado en %s', out_path)
 
     with open(audit_path, 'w', encoding='utf-8', newline='') as f:
         writer_csv = csv.writer(f)
         writer_csv.writerow(['key', 'status', 'old_chars', 'new_chars', 'lang', 'model'])
         writer_csv.writerows(audit_rows)
+    LOGGER.info('Auditoría guardada en %s', audit_path)
 
+    LOGGER.info('Resumen: total=%d, cambiados=%d', total, changed)
     return {'total': total, 'changed': changed}
 
 
@@ -616,13 +832,17 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--input', required=True)
     parser.add_argument('--out', required=True)
-    parser.add_argument('--audit', default='logs/enrich_abstracts_audit.csv')
-    parser.add_argument('--state', default='logs/enrich_state.jsonl')
+    parser.add_argument('--audit', default='logs/enrich_abstracts_audit.csv',
+                        help='Ruta base para auditoría; se le añade _YYYYMMDD_XXX automáticamente.')
+    parser.add_argument('--state', default='logs/enrich_state.jsonl',
+                        help='Ruta base para estado; se le añade _YYYYMMDD_XXX automáticamente.')
+    parser.add_argument('--log-dir', default='logs', help='Directorio para archivos de log.')
+    parser.add_argument('--log-level', default='INFO', help='Nivel de log para consola (DEBUG, INFO, WARNING, ERROR).')
     parser.add_argument('--dry-run', action='store_true')
     parser.add_argument('--resume', action='store_true')
     parser.add_argument('--force-retry', action='store_true')
-    parser.add_argument('--model', default='xai/grok-2-mini')
-    parser.add_argument('--fallbacks', default='openai/gpt-4o-mini,anthropic/claude-3.5-sonnet')
+    parser.add_argument('--model', default='x-ai/grok-4-fast')
+    parser.add_argument('--fallbacks', default='anthropic/claude-sonnet-4.5,x-ai/grok-4')
     parser.add_argument('--min-chars', type=int, default=MIN_CHARS,
                         help='Caracteres mínimos del abstract para considerarlo suficiente (por defecto 400).')
     parser.add_argument('--min-keywords', type=int, default=MIN_KEYWORDS,
@@ -633,16 +853,33 @@ def main():
                         help='Ejecuta pruebas de la ruta Crossref/URL y termina.')
     args = parser.parse_args()
 
+    logfile = setup_logging(args.log_dir, args.log_level)
+    # Construye sufijo _YYYYMMDD_XXX a partir del logfile para mantener consistencia
+    lf_stem = Path(logfile).stem  # enrich_abstracts_log_YYYYMMDD_XXX
+    parts = lf_stem.split('_')
+    log_suffix = ''
+    if len(parts) >= 2:
+        log_suffix = '_' + '_'.join(parts[-2:])  # _YYYYMMDD_XXX
+
+    # Aplica sufijo a audit y state
+    audit_path = Path(args.audit)
+    state_path = Path(args.state)
+    audit_path = audit_path.with_name(f"{audit_path.stem}{log_suffix}{audit_path.suffix}") if log_suffix else audit_path
+    state_path = state_path.with_name(f"{state_path.stem}{log_suffix}{state_path.suffix}") if log_suffix else state_path
+
+    LOGGER.info('Parámetros: input=%s out=%s audit=%s state=%s model=%s fallbacks=%s dry_run=%s resume=%s force_retry=%s min_chars=%d min_keywords=%d enrich_all=%s',
+                args.input, args.out, str(audit_path), str(state_path), args.model, args.fallbacks, args.dry_run, args.resume, args.force_retry, args.min_chars, args.min_keywords, args.enrich_all)
+
     if args.run_fetch_tests:
         run_fetch_tests()
         return
 
     fallbacks = [x.strip() for x in args.fallbacks.split(',') if x.strip()]
-    enrich_bib(
+    result = enrich_bib(
         args.input,
         args.out,
-        args.audit,
-        args.state,
+        str(audit_path),
+        str(state_path),
         args.model,
         fallbacks,
         dry_run=args.dry_run,
@@ -652,6 +889,7 @@ def main():
         min_keywords=max(0, args.min_keywords),
         enrich_all=args.enrich_all,
     )
+    LOGGER.info('Proceso finalizado. Archivo log: %s', logfile)
 
 
 if __name__ == '__main__':

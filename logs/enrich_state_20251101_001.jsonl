@@ -1,0 +1,7 @@
+{"key": "tamascelli_academic_2025", "status": "enriched", "model": "x-ai/grok-4-fast", "ts": 1762058414.3274474}
+{"key": "quinn_accelerating_2025", "status": "enriched", "model": "x-ai/grok-4-fast", "ts": 1762058420.4313493}
+{"key": "zhang_survey_2025", "status": "enriched", "model": "x-ai/grok-4-fast", "ts": 1762058424.7993736}
+{"key": "sun_adaptive_2024", "status": "enriched", "model": "x-ai/grok-4-fast", "ts": 1762058434.9277503}
+{"key": "shi_amsnet-kg_2025", "status": "fetched", "source": "crossref", "ts": 1762058435.4722645}
+{"key": "zhang_survey_2025-1", "status": "fetched", "source": "crossref", "ts": 1762058436.0988033}
+{"key": "deng_ai_2025", "status": "fetched", "source": "crossref", "ts": 1762058436.7002692}
