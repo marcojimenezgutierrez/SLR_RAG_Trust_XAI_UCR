@@ -1,0 +1,53 @@
+id	title	year	venue	language	RQs	relevance	score	decision	reason
+__2024	검색 증강 생성 ({RAG}	2024	정보처리학회 논문지 (KTSDE)		-	Baja	0.0	Maybe	Fuera de alcance
+_fine-tuning_2024	Fine-tuning 과 {RAG}	2024	Proceedings of KIIT …		-	Baja	0.0	Maybe	Fuera de alcance
+_rag_2023	{RAG}	2023	Proceedings of KIIT Conference		-	Baja	0.0	Maybe	Fuera de alcance
+_rag_2024	{RAG}	2024	대한전자공학회 학술 …		-	Baja	0.0	Maybe	Fuera de alcance
+agrawal_mindful-rag_2024-1	Mindful-rag: {A}	2024	2024 2nd International …		-	Baja	0.0	Maybe	Fuera de alcance
+barnett_seven_2024-1	Seven {Failure}	2024	2024 {IEEE}		-	Baja	0.0	Maybe	Fuera de alcance
+beasley_tarragon_2025	{TARRAGON}	2025	bioRxiv		-	Baja	0.0	Maybe	Fuera de alcance
+buzzi_towards_2025	Towards {Empowering}	2025	Proceedings of the 18th {ACM}		-	Baja	0.0	Maybe	Fuera de alcance
+chatterjee_towards_2025	Towards {An}	2025	Proceedings of the {Workshop}		-	Baja	0.0	Maybe	Fuera de alcance
+chen_empowering_2024	Empowering {Private}	2024	Proceedings of the 33rd {ACM}		-	Baja	0.0	Maybe	Fuera de alcance
+chen_geofactory_2025	{GeoFactory}	2025	Big Earth Data		-	Baja	0.0	Maybe	Fuera de alcance
+church_emerging_2024-1	Emerging trends: a gentle introduction to {RAG}	2024	Natural Language …		-	Baja	0.0	Maybe	Fuera de alcance
+clop_backdoored_2024	Backdoored retrievers for prompt injection attacks on retrieval augmented generation of large language models	2024	arXiv preprint arXiv:2410.14479		-	Baja	0.0	Maybe	Fuera de alcance
+cornacchia_between_2025	Between {Promise}	2025	Proceedings of the 16th {ACM}		-	Baja	0.0	Maybe	Fuera de alcance
+cummings_rag_2025	{RAG}	2025	2025 {IEEE}		-	Baja	0.0	Maybe	Fuera de alcance
+cutler_stochastic_2024	Stochastic {Approximation}	2024	J. Mach. Learn. Res.		-	Baja	0.0	Maybe	Fuera de alcance
+di_foraging_2022	A {Foraging}	2022	ACM Trans. Intell. Syst. Technol.		-	Baja	0.0	Maybe	Fuera de alcance
+ding_retrieve_2024	Retrieve only when it needs: {Adaptive}	2024	arXiv preprint arXiv:2402.10612		-	Baja	0.0	Maybe	Fuera de alcance
+fichtenkamm_towards_2024	Towards an {FA}	2024	2024 {IEEE}		-	Baja	0.0	Maybe	Fuera de alcance
+finsas_optimizing_2024	Optimizing rag systems for technical support with llm-based relevance feedback and multi-agent patterns	2024	ntnuopen.ntnu.no		-	Baja	0.0	Maybe	Fuera de alcance
+franco_integrating_2025	Integrating {Content}	2025	ACM Trans. Web		-	Baja	0.0	Maybe	Fuera de alcance
+friel_ragbench_2024	Ragbench: {Explainable}	2024	arXiv preprint arXiv:2407.11005		-	Baja	0.0	Maybe	Fuera de alcance
+fu_cue_2025	Cue {RAG}	2025	Neurocomputing		-	Baja	0.0	Maybe	Fuera de alcance
+he_designminds_2025	{DesignMinds}	2025	Proceedings of the 7th {ACM}		-	Baja	0.0	Maybe	Fuera de alcance
+hoffmann_text_2025	From {Text}	2025	International {Conference}		-	Baja	0.0	Maybe	Fuera de alcance
+izacard_atlas_2023	Atlas: few-shot learning with retrieval augmented language models	2023	J. Mach. Learn. Res.		-	Baja	0.0	Maybe	Fuera de alcance
+junior_domain-driven_2024	Domain-driven {LLM}	2024	Proceedings of the 30th …		-	Baja	0.0	Maybe	Fuera de alcance
+kang_nadine_2024-1	Nadine: {A}	2024	Computer Animation and …		-	Baja	0.0	Maybe	Fuera de alcance
+lee_log2plan_2025	{Log2Plan}	2025	Proceedings of the 38th {Annual}		-	Baja	0.0	Maybe	Fuera de alcance
+li_wiping_2024	Wiping out the limitations of {Large}	2024	alexandria.unisg.ch		-	Baja	0.0	Maybe	Fuera de alcance
+liu_detecting_2025-1	Detecting emergencies in patient portal messages using large language models and knowledge graph-based retrieval-augmented generation	2025	Journal of the …		-	Baja	0.0	Maybe	Fuera de alcance
+liu_how_2024	How {Can}	2024	J. Comput. Cult. Herit.		-	Baja	0.0	Maybe	Fuera de alcance
+liu_leveraging_2025	Leveraging {Passage}	2025	Proceedings of the {ACM}		-	Baja	0.0	Maybe	Fuera de alcance
+lu_large_2024	Large {Language}	2024	arXiv		-	Baja	0.0	Maybe	Fuera de alcance
+maruyama_retrieval-augmented_2025	Retrieval-augmented generation enhances large language model performance on the {Japanese}	2025	Journal of Orthopaedic Science		-	Baja	0.0	Maybe	Fuera de alcance
+nemeth_using_2024	Using a {RAG}	2024	Hungarian Statistical Review		-	Baja	0.0	Maybe	Fuera de alcance
+noauthor_international_2025	International {Conference}	2025	Lecture Notes in Networks and Systems		-	Baja	0.0	Maybe	Fuera de alcance
+oguine_how_2025	How the {Internet}	2025	Proc. ACM Hum.-Comput. Interact.		-	Baja	0.0	Maybe	Fuera de alcance
+park_system_2025	A {System}	2025	Communications in Computer and Information Science		-	Baja	0.0	Maybe	Fuera de alcance
+peng_data_2024	Data extraction attacks in retrieval-augmented generation via backdoors	2024	arXiv preprint arXiv:2411.01705		-	Baja	0.0	Maybe	Fuera de alcance
+poon_computer-mediated_2023	Computer-{Mediated}	2023	Proc. ACM Hum.-Comput. Interact.		-	Baja	0.0	Maybe	Fuera de alcance
+rachmat_fine-tuning_2024	Fine-{Tuning}	2024	2024 {Ninth}		-	Baja	0.0	Maybe	Fuera de alcance
+rehulka_rag_2024	{RAG}	2024	{CEUR}		-	Baja	0.0	Maybe	Fuera de alcance
+salemi_evaluating_2024	Evaluating retrieval quality in retrieval-augmented generation	2024	Proceedings of the 47th International ACM SIGIR …		-	Baja	0.0	Maybe	Fuera de alcance
+shandilya_boosting_2024	Boosting the {Capabilities}	2024	arXiv preprint arXiv:2410.00387		-	Baja	0.0	Maybe	Fuera de alcance
+soto-jimenez_rag-based_2024	{RAG}	2024	Intelligent Systems …		-	Baja	0.0	Maybe	Fuera de alcance
+tel_rag_2025	{RAG}	2025	{CEUR}		-	Baja	0.0	Maybe	Fuera de alcance
+voznyuk_advacheck_2025	Advacheck at semeval-2025 task 3: {Combining}	2025	Proceedings of the 19th …		-	Baja	0.0	Maybe	Fuera de alcance
+wu_knowledge_2024	Knowledge graph integration and self-verification for comprehensive retrieval-augmented generation	2024	… Retrieval Augmented …		-	Baja	0.0	Maybe	Fuera de alcance
+yuan_rag-driver_2024	Rag-driver: {Generalisable}	2024	arXiv preprint arXiv …		-	Baja	0.0	Maybe	Fuera de alcance
+zeng_combining_2024	Combining {Large}	2024	Proceedings of the 47th {International}		-	Baja	0.0	Maybe	Fuera de alcance
+zhou_research_2024	Research on the {Application}	2024	Proceedings of the 2024 9th {International}		-	Baja	0.0	Maybe	Fuera de alcance
