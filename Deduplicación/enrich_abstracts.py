@@ -646,10 +646,24 @@ def enrich_bib(
     min_chars=MIN_CHARS,
     min_keywords=MIN_KEYWORDS,
     enrich_all=False,
+    checkpoint_every: int = 0,
 ):
     ensure_parent(out_path)
     ensure_parent(audit_path)
     ensure_parent(state_path)
+    partial_out_path = f"{out_path}.partial" if checkpoint_every and checkpoint_every > 0 else None
+    audit_streaming = bool(checkpoint_every and checkpoint_every > 0)
+    audit_writer = None
+    audit_fh = None
+    if audit_streaming:
+        # Abrimos auditoría en append y escribimos encabezado si el archivo no existe o está vacío
+        p = Path(audit_path)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        file_exists = p.exists() and p.stat().st_size > 0
+        audit_fh = p.open('a', encoding='utf-8', newline='')
+        audit_writer = csv.writer(audit_fh)
+        if not file_exists:
+            audit_writer.writerow(['key', 'status', 'old_chars', 'new_chars', 'lang', 'model'])
 
     if resume and not force_retry:
         resume_src = _resolve_resume_state_path(state_path)
@@ -668,6 +682,7 @@ def enrich_bib(
     audit_rows = []
     changed = 0
     total = 0
+    processed_run = 0  # entradas efectivamente procesadas en esta corrida (excluye saltos por resume)
     for entry in db.entries:
         total += 1
         key = entry.get('ID') or entry.get('id') or entry.get('citekey') or f'entry_{total}'
@@ -682,6 +697,15 @@ def enrich_bib(
         if not enrich_all and not needs_enrichment(abstract, min_chars, min_keywords):
             LOGGER.debug('Suficiente, no enriquecer: %s (len=%d)', key, len(abstract or ''))
             append_state(state_path, {'key': key, 'status': 'skipped', 'reason': 'sufficient', 'ts': time.time()})
+            processed_run += 1
+            # Checkpoint oportunista en resume tras la primera entrada procesada
+            if partial_out_path and (processed_run % checkpoint_every == 0 or (resume and processed_run == 1)):
+                try:
+                    with open(partial_out_path, 'w', encoding='utf-8') as f:
+                        bibtexparser.dump(db, f)
+                    LOGGER.info('Checkpoint guardado en %s (procesadas=%d)', partial_out_path, processed_run)
+                except Exception as e:
+                    LOGGER.warning('Error al escribir checkpoint %s: %s', partial_out_path, e)
             continue
 
         original_abstract = abstract or ''
@@ -710,6 +734,21 @@ def enrich_bib(
                 audit_rows.append([key, 'fetched', original_length, len(fetched_abs), lang, fetched_source])
                 append_state(state_path, {'key': key, 'status': 'fetched', 'source': fetched_source, 'ts': time.time()})
                 changed += 1 if fetched_abs != original_abstract else 0
+                processed_run += 1
+                # Audit streaming
+                if audit_writer:
+                    try:
+                        audit_writer.writerow([key, 'fetched', original_length, len(fetched_abs), lang, fetched_source])
+                    except Exception:
+                        pass
+                # Checkpoint
+                if partial_out_path and (processed_run % checkpoint_every == 0 or (resume and processed_run == 1)):
+                    try:
+                        with open(partial_out_path, 'w', encoding='utf-8') as f:
+                            bibtexparser.dump(db, f)
+                        LOGGER.info('Checkpoint guardado en %s (procesadas=%d)', partial_out_path, processed_run)
+                    except Exception as e:
+                        LOGGER.warning('Error al escribir checkpoint %s: %s', partial_out_path, e)
                 continue
 
         lang = pick_language((abstract or title) or '')
@@ -768,16 +807,48 @@ def enrich_bib(
             used_model or '',
         ])
         append_state(state_path, {'key': key, 'status': status, 'model': used_model, 'ts': time.time()})
+        processed_run += 1
+        # Audit streaming
+        if audit_writer:
+            try:
+                audit_writer.writerow([key, status, original_length, len(entry.get('abstract', '') or ''), lang, used_model or ''])
+            except Exception:
+                pass
+
+        # Checkpoint: escribe progreso parcial del BibTex cada N entradas procesadas en esta corrida
+        if partial_out_path and (processed_run % checkpoint_every == 0 or (resume and processed_run == 1)):
+            try:
+                with open(partial_out_path, 'w', encoding='utf-8') as f:
+                    bibtexparser.dump(db, f)
+                LOGGER.info('Checkpoint guardado en %s (procesadas=%d)', partial_out_path, processed_run)
+            except Exception as e:
+                LOGGER.warning('Error al escribir checkpoint %s: %s', partial_out_path, e)
 
     with open(out_path, 'w', encoding='utf-8') as f:
         bibtexparser.dump(db, f)
     LOGGER.info('Archivo BibTeX guardado en %s', out_path)
+    # Al finalizar, si hubo archivo parcial, lo actualizamos también con el estado final
+    if partial_out_path:
+        try:
+            with open(partial_out_path, 'w', encoding='utf-8') as f:
+                bibtexparser.dump(db, f)
+            LOGGER.info('Archivo parcial actualizado con estado final: %s', partial_out_path)
+        except Exception as e:
+            LOGGER.warning('No se pudo actualizar archivo parcial final %s: %s', partial_out_path, e)
 
-    with open(audit_path, 'w', encoding='utf-8', newline='') as f:
-        writer_csv = csv.writer(f)
-        writer_csv.writerow(['key', 'status', 'old_chars', 'new_chars', 'lang', 'model'])
-        writer_csv.writerows(audit_rows)
-    LOGGER.info('Auditoría guardada en %s', audit_path)
+    if audit_writer:
+        try:
+            audit_fh.flush()
+            audit_fh.close()
+        except Exception:
+            pass
+        LOGGER.info('Auditoría actualizada en modo streaming: %s', audit_path)
+    else:
+        with open(audit_path, 'w', encoding='utf-8', newline='') as f:
+            writer_csv = csv.writer(f)
+            writer_csv.writerow(['key', 'status', 'old_chars', 'new_chars', 'lang', 'model'])
+            writer_csv.writerows(audit_rows)
+        LOGGER.info('Auditoría guardada en %s', audit_path)
 
     LOGGER.info('Resumen: total=%d, cambiados=%d', total, changed)
     return {'total': total, 'changed': changed}
@@ -838,6 +909,8 @@ def main():
                         help='Ruta base para estado; se le añade _YYYYMMDD_XXX automáticamente.')
     parser.add_argument('--log-dir', default='logs', help='Directorio para archivos de log.')
     parser.add_argument('--log-level', default='INFO', help='Nivel de log para consola (DEBUG, INFO, WARNING, ERROR).')
+    parser.add_argument('--checkpoint-every', type=int, default=30,
+                        help='Cada cuántas entradas escribir un checkpoint en <out>.partial (0 desactiva).')
     parser.add_argument('--dry-run', action='store_true')
     parser.add_argument('--resume', action='store_true')
     parser.add_argument('--force-retry', action='store_true')
@@ -888,6 +961,7 @@ def main():
         min_chars=max(0, args.min_chars),
         min_keywords=max(0, args.min_keywords),
         enrich_all=args.enrich_all,
+        checkpoint_every=max(0, args.checkpoint_every),
     )
     LOGGER.info('Proceso finalizado. Archivo log: %s', logfile)
 
