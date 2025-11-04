@@ -12,7 +12,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Dict, Iterable, List, Optional, Sequence, Tuple, Mapping
 
 import bibtexparser
 import httpx
@@ -263,6 +263,7 @@ def parse_arguments(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument("--capture-reasoning", dest="capture_reasoning", action="store_true", help="Capture reasoning blocks emitted by the LLM (default: enabled).")
     parser.add_argument("--no-capture-reasoning", dest="capture_reasoning", action="store_false", help="Disable reasoning capture.")
     parser.set_defaults(capture_reasoning=True)
+    parser.add_argument("--progress-every", type=int, default=1, help="Print progress every N completed items (default: 1).")
     return parser.parse_args(argv)
 
 
@@ -350,7 +351,7 @@ def write_tsv(path: Path, fieldnames: Sequence[str], rows: Sequence[Dict[str, st
         writer.writerows(rows)
 
 
-def export_to_excel(path: Path, fieldnames: Sequence[str], rows: Sequence[Dict[str, str]], sheet_name: str) -> None:
+def export_to_excel(path: Path, fieldnames: Sequence[str], rows: Sequence[Dict[str, str]], sheet_name: str, summary: Optional[Mapping[str, object]] = None) -> None:
     workbook = Workbook()
     worksheet = workbook.active
     safe_sheet = (sheet_name or DEFAULT_SHEET_NAME)[:31]
@@ -358,6 +359,17 @@ def export_to_excel(path: Path, fieldnames: Sequence[str], rows: Sequence[Dict[s
     worksheet.append(list(fieldnames))
     for row in rows:
         worksheet.append([row.get(column, "") for column in fieldnames])
+    # Optional summary sheet
+    if summary:
+        sheet_title = "summary"
+        # Ensure valid length for Excel sheet name
+        sheet = workbook.create_sheet(title=sheet_title[:31])
+        sheet.append(["key", "value"]) 
+        for k, v in summary.items():
+            try:
+                sheet.append([str(k), json.dumps(v, ensure_ascii=False) if not isinstance(v, (str, int, float)) else v])
+            except Exception:
+                sheet.append([str(k), str(v)])
     workbook.save(path)
 
 
@@ -588,9 +600,41 @@ def run_work_items(
     max_retries: int,
     concurrency: int,
     capture_reasoning: bool,
+    progress_every: int,
 ) -> List[WorkResult]:
     if not items:
         return []
+
+    import time
+    start_ts = time.perf_counter()
+    total = len(items)
+    completed = 0
+
+    def _progress_tick():
+        nonlocal completed
+        if progress_every <= 0:
+            return
+        if completed % progress_every != 0 and completed != total:
+            return
+        elapsed = time.perf_counter() - start_ts
+        rate = (completed / elapsed) if elapsed > 0 else 0.0
+        remaining = max(total - completed, 0)
+        eta = (remaining / rate) if rate > 0 else 0.0
+        pct = (completed / total * 100.0) if total > 0 else 100.0
+        def fmt(s: float) -> str:
+            h = int(s // 3600)
+            m = int((s % 3600) // 60)
+            sec = int(s % 60)
+            return f"{h:02d}:{m:02d}:{sec:02d}"
+        logging.info(
+            "Progreso: %s/%s (%.1f%%) | elapsed %s | ETA %s | rate %.2f it/s",
+            completed,
+            total,
+            pct,
+            fmt(elapsed),
+            fmt(eta),
+            rate,
+        )
 
     def _execute(item: WorkItem) -> WorkResult:
         for attempt in range(1, max_retries + 1):
@@ -638,12 +682,16 @@ def run_work_items(
     if workers == 1:
         for item in items:
             results.append(_execute(item))
+            completed += 1
+            _progress_tick()
         return results
 
     with ThreadPoolExecutor(max_workers=workers) as executor:
         future_map = {executor.submit(_execute, item): item for item in items}
         for future in as_completed(future_map):
             results.append(future.result())
+            completed += 1
+            _progress_tick()
     return results
 
 
@@ -658,6 +706,10 @@ def summarize_status(rows: Sequence[Dict[str, str]]) -> Dict[str, int]:
 def run(argv: Optional[Sequence[str]] = None) -> int:
     args = parse_arguments(argv)
     setup_logging(args.log_level)
+
+    import time
+    overall_start = time.perf_counter()
+    start_iso = datetime.now().isoformat(timespec="seconds")
 
     input_tsv = Path(args.input_tsv).resolve()
     bib_path = Path(args.bib_file).resolve()
@@ -697,6 +749,22 @@ def run(argv: Optional[Sequence[str]] = None) -> int:
         prompt_dir=prompt_dir,
     )
 
+    total_rows = len(rows)
+    already_processed = sum(1 for r in rows if (r.get("llm_response") or "").strip())
+    id_no_match_marked = sum(1 for r in rows if (r.get("llm_status") or "") == STATUS_ID_NO_MATCH)
+    no_abstract_marked = sum(1 for r in rows if (r.get("llm_status") or "") == STATUS_NO_ABSTRACT)
+    to_process = len(items)
+
+    logging.info(
+        "Pre-resumen: filas TSV=%s | ya procesadas=%s | IdNoMatch=%s | NoAbstract=%s | a procesar=%s | bib_total=%s",
+        total_rows,
+        already_processed,
+        id_no_match_marked,
+        no_abstract_marked,
+        to_process,
+        len(bib_entries),
+    )
+
     logging.info("Prepared %s work items for LLM processing.", len(items))
 
     if items:
@@ -716,6 +784,7 @@ def run(argv: Optional[Sequence[str]] = None) -> int:
                 max_retries=args.max_retries,
                 concurrency=args.concurrency,
                 capture_reasoning=args.capture_reasoning,
+                progress_every=max(1, int(args.progress_every or 1)),
             )
         for result in results:
             apply_result(rows[result.row_index], result)
@@ -725,11 +794,86 @@ def run(argv: Optional[Sequence[str]] = None) -> int:
     write_tsv(output_tsv, fieldnames, rows)
     logging.info("Updated TSV saved to %s.", output_tsv)
 
-    export_to_excel(output_xlsx, fieldnames, rows, args.sheet_name)
+    # Build summary metrics
+    duration_sec = time.perf_counter() - overall_start
+    end_iso = datetime.now().isoformat(timespec="seconds")
+    status_counts = summarize_status(rows)
+    items_done = sum(status_counts.get(k, 0) for k in status_counts if k == STATUS_OK)
+    items_total = len(items)
+    avg_sec_per_item = (duration_sec / items_done) if items_done else 0.0
+    items_per_sec = (items_done / duration_sec) if duration_sec > 0 else 0.0
+
+    def fmt_hms(s: float) -> str:
+        h = int(s // 3600)
+        m = int((s % 3600) // 60)
+        sec = int(s % 60)
+        return f"{h:02d}:{m:02d}:{sec:02d}"
+
+    summary_payload: Dict[str, object] = {
+        "tsv_path": str(output_tsv),
+        "xlsx_path": str(output_xlsx),
+        "prompts_dir": str(output_tsv.parent / "prompts"),
+        "start_time": start_iso,
+        "end_time": end_iso,
+        "duration_sec": round(duration_sec, 3),
+        "duration_hms": fmt_hms(duration_sec),
+        "items_total": items_total,
+        "items_done": items_done,
+        "avg_sec_per_item": round(avg_sec_per_item, 3),
+        "items_per_sec": round(items_per_sec, 3),
+        "progress_every": int(args.progress_every or 1),
+        "bib_total": len(bib_entries),
+        "pre_rows_total": total_rows,
+        "pre_already_processed": already_processed,
+        "pre_id_no_match": id_no_match_marked,
+        "pre_no_abstract": no_abstract_marked,
+        "pre_to_process": to_process,
+        "status_counts": status_counts,
+        "config": {
+            "provider": args.provider,
+            "host": args.host,
+            "model": args.model,
+            "temperature": args.temperature,
+            "concurrency": args.concurrency,
+            "capture_reasoning": args.capture_reasoning,
+        },
+    }
+
+    export_to_excel(output_xlsx, fieldnames, rows, args.sheet_name, summary=summary_payload)
     logging.info("Excel export created at %s.", output_xlsx)
 
-    summary = summarize_status(rows)
-    logging.info("Final status counts: %s", summary)
+    # Write sidecar summaries
+    summary_txt = output_tsv.with_suffix(".summary.txt")
+    summary_json = output_tsv.with_suffix(".summary.json")
+    try:
+        with summary_txt.open("w", encoding="utf-8") as s:
+            s.write(f"Results TSV: {output_tsv}\n")
+            s.write(f"Results XLSX: {output_xlsx}\n")
+            s.write(f"Prompts dir: {output_tsv.parent / 'prompts'}\n\n")
+            s.write(f"Start: {start_iso}\nEnd: {end_iso}\nDuration: {fmt_hms(duration_sec)} ({duration_sec:.3f}s)\n")
+            s.write(f"Items: {items_done}/{items_total} | Avg/item: {avg_sec_per_item:.3f}s | Rate: {items_per_sec:.3f} it/s\n")
+            s.write(f"Pre: rows={total_rows} processed={already_processed} IdNoMatch={id_no_match_marked} NoAbstract={no_abstract_marked} to_process={to_process} bib_total={len(bib_entries)}\n\n")
+            s.write("Status counts:\n")
+            for k, v in sorted(status_counts.items()):
+                s.write(f"  {k}: {v}\n")
+    except Exception as exc:
+        logging.warning("Failed to write summary txt: %s", exc)
+
+    try:
+        with summary_json.open("w", encoding="utf-8") as j:
+            json.dump(summary_payload, j, ensure_ascii=False, indent=2)
+    except Exception as exc:
+        logging.warning("Failed to write summary json: %s", exc)
+
+    logging.info(
+        "Final: %s items in %s (%.3fs) | avg %.3fs/item | %.3f it/s | status %s",
+        items_done,
+        fmt_hms(duration_sec),
+        duration_sec,
+        avg_sec_per_item,
+        items_per_sec,
+        status_counts,
+    )
     return 0
 
 
