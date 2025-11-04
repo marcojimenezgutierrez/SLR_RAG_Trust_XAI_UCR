@@ -117,10 +117,17 @@ venv.bak/
 
 # Logs
 *.log
+logs/
+**/logs/
 
 # Caches
 .mypy_cache/
 dmypy.json
+
+# Project outputs
+screening_out/
+**/Resultado/
+**/prompts/
 
 # OS artifacts
 .DS_Store
