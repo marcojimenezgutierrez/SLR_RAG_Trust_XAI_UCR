@@ -26,7 +26,7 @@ STATUS_LLM_ERROR = "LLMError"
 STATUS_PARSE_ERROR = "ParseError"
 STATUS_TIMEOUT = "Timeout"
 
-NEW_COLUMNS = ["rqs_llm", "llm_explanation", "llm_response", "llm_status"]
+NEW_COLUMNS = ["rqs_llm", "llm_explanation", "llm_response", "llm_reasoning", "llm_status"]
 VALID_PROVIDERS = {"ollama_native", "openai_compat"}
 DEFAULT_PROVIDER = "ollama_native"
 DEFAULT_MODEL = "gpt-oss:20b"
@@ -37,6 +37,9 @@ DEFAULT_TIMEOUT = 120.0
 DEFAULT_SHEET_NAME = "results"
 DEFAULT_OUTPUT_DIR = Path(__file__).resolve().parent / "Resultado"
 DEFAULT_OPENAI_MAX_TOKENS = 50_000
+PROMPT_SEPARATOR_LINE = "-" * 56
+
+REASONING_PATTERN = re.compile(r"Thinking\.\.\.(.*?)(?:\.\.\.done thinking\.)", re.DOTALL | re.IGNORECASE)
 
 PROMPT_TEMPLATE = """You are a senior reviewer for a systematic literature review \
 focused on Retrieval-Augmented Generation (RAG) systems, trust, hallucinations, \
@@ -101,6 +104,7 @@ class WorkResult:
     status: str
     rqs: str = ""
     explanation: str = ""
+    reasoning: str = ""
     raw_response: str = ""
 
 
@@ -148,35 +152,63 @@ class LLMClient:
     def __exit__(self, exc_type, exc, tb) -> None:  # type: ignore[override]
         self.close()
 
-    def generate(self, prompt: str) -> str:
+    def generate(self, prompt: str, *, capture_reasoning: bool) -> Tuple[str, str]:
         try:
             if self.provider == "ollama_native":
-                return self._generate_ollama(prompt)
-            return self._generate_openai(prompt)
+                return self._generate_ollama(prompt, capture_reasoning=capture_reasoning)
+            return self._generate_openai(prompt, capture_reasoning=capture_reasoning)
         except httpx.TimeoutException as exc:  # pragma: no cover - network errors are runtime-specific
             raise LLMTimeoutError("LLM request timed out") from exc
         except httpx.RequestError as exc:  # pragma: no cover
             raise LLMClientError(f"LLM request failed: {exc}") from exc
 
-    def _generate_ollama(self, prompt: str) -> str:
+    def _generate_ollama(self, prompt: str, *, capture_reasoning: bool) -> Tuple[str, str]:
         url = f"{self.host}/api/generate"
         options: Dict[str, object] = {"temperature": self.temperature}
         options["num_predict"] = self.max_tokens if self.max_tokens >= 0 else -1
         payload = {
             "model": self.model,
             "prompt": prompt,
-            "stream": False,
             "options": options,
+            "stream": bool(capture_reasoning),
         }
+        if capture_reasoning:
+            response_buffer: List[str] = []
+            reasoning_buffer: List[str] = []
+            done_reason: Optional[str] = None
+            with self._client.stream("POST", url, json=payload) as stream:
+                stream.raise_for_status()
+                for line in stream.iter_lines():
+                    if not line:
+                        continue
+                    event = json.loads(line)
+                    response_part = event.get("response")
+                    if isinstance(response_part, str):
+                        response_buffer.append(response_part)
+                    thinking_part = event.get("thinking")
+                    if isinstance(thinking_part, str):
+                        reasoning_buffer.append(thinking_part)
+                    if event.get("done"):
+                        done_reason = event.get("done_reason")
+                        break
+            if done_reason and done_reason not in {"stop", ""}:
+                raise LLMClientError(f"Ollama generation stopped early: {done_reason}")
+            response_text = "".join(response_buffer).strip()
+            reasoning_text = "".join(reasoning_buffer).strip()
+            if not response_text:
+                raise LLMClientError("Ollama stream returned empty response")
+            return response_text, reasoning_text
+
+        payload["stream"] = False
         response = self._client.post(url, json=payload)
         response.raise_for_status()
         data = response.json()
         content = data.get("response")
         if not isinstance(content, str):
             raise LLMClientError("Unexpected Ollama response payload")
-        return content.strip()
+        return content.strip(), ""
 
-    def _generate_openai(self, prompt: str) -> str:
+    def _generate_openai(self, prompt: str, *, capture_reasoning: bool) -> Tuple[str, str]:
         url = f"{self.host}/v1/chat/completions"
         payload: Dict[str, object] = {
             "model": self.model,
@@ -198,7 +230,11 @@ class LLMClient:
         content = message.get("content")
         if not isinstance(content, str):
             raise LLMClientError("OpenAI-compatible backend returned invalid content")
-        return content.strip()
+        output = content.strip()
+        if capture_reasoning:
+            reasoning, _ = extract_reasoning_block(output)
+            return output, reasoning
+        return output, ""
 
 
 def parse_arguments(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
@@ -223,6 +259,10 @@ def parse_arguments(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument("--force", action="store_true", help="Recompute even if llm_response is already populated.")
     parser.add_argument("--log-level", default="INFO", help="Logging level (DEBUG, INFO, WARNING, ...).")
     parser.add_argument("--summary-only", action="store_true", help="Skip LLM calls and only report configuration.")
+    parser.add_argument("--dump-prompts", action="store_true", help="Save generated prompts under the run folder for debugging.")
+    parser.add_argument("--capture-reasoning", dest="capture_reasoning", action="store_true", help="Capture reasoning blocks emitted by the LLM (default: enabled).")
+    parser.add_argument("--no-capture-reasoning", dest="capture_reasoning", action="store_false", help="Disable reasoning capture.")
+    parser.set_defaults(capture_reasoning=True)
     return parser.parse_args(argv)
 
 
@@ -442,10 +482,20 @@ def parse_llm_response(raw: str, allowed_codes: Sequence[str]) -> Tuple[str, str
     return normalized, explanation
 
 
+def extract_reasoning_block(raw: str) -> Tuple[str, str]:
+    match = REASONING_PATTERN.search(raw)
+    if not match:
+        return "", raw
+    reasoning_block = raw[match.start() : match.end()].strip()
+    remainder = (raw[: match.start()] + raw[match.end() :]).strip()
+    return reasoning_block, remainder
+
+
 def apply_result(row: Dict[str, str], result: WorkResult) -> None:
     row["rqs_llm"] = result.rqs
     row["llm_explanation"] = result.explanation
     row["llm_response"] = result.raw_response
+    row["llm_reasoning"] = result.reasoning
     row["llm_status"] = result.status
 
 
@@ -453,6 +503,7 @@ def mark_simple_status(row: Dict[str, str], status: str, message: str) -> None:
     row["rqs_llm"] = ""
     row["llm_explanation"] = message
     row["llm_response"] = ""
+    row["llm_reasoning"] = ""
     row["llm_status"] = status
 
 
@@ -465,8 +516,15 @@ def collect_work_items(
     bib_id_filter: Optional[str],
     force: bool,
     extra_keywords: Sequence[str],
+    prompt_dir: Optional[Path] = None,
 ) -> List[WorkItem]:
     work: List[WorkItem] = []
+    if prompt_dir is not None:
+        try:
+            prompt_dir.mkdir(parents=True, exist_ok=True)
+        except Exception as exc:  # pragma: no cover
+            logging.warning("Failed to create prompt directory %s: %s", prompt_dir, exc)
+            prompt_dir = None
     for index, row in enumerate(rows):
         row_id = (row.get("id") or "").strip()
         if not row_id:
@@ -501,7 +559,24 @@ def collect_work_items(
             allowed_codes=allowed_codes,
             extra_keywords=extra_keywords,
         )
-        work.append(WorkItem(row_index=index, row_id=row_id, prompt=prompt))
+        item = WorkItem(row_index=index, row_id=row_id, prompt=prompt)
+        # Optionally dump prompt to disk for debugging
+        if prompt_dir is not None:
+            try:
+                safe_id = re.sub(r"[^\w.-]+", "_", row_id) or f"row_{index}"
+                pth = prompt_dir / f"{index:04d}_{safe_id}.txt"
+                title_source = entry.title or (row.get("title") or "").strip()
+                title_clean = re.sub(r"\s+", " ", title_source).strip() or "(sin título)"
+                header = (
+                    f"{PROMPT_SEPARATOR_LINE}\n"
+                    f"ID: {row_id} | {title_clean}\n"
+                    f"{PROMPT_SEPARATOR_LINE}\n\n"
+                    f"{prompt}"
+                )
+                pth.write_text(header, encoding="utf-8")
+            except Exception as exc:  # pragma: no cover
+                logging.warning("Failed to write prompt for %s: %s", row_id, exc)
+        work.append(item)
     return work
 
 
@@ -512,6 +587,7 @@ def run_work_items(
     *,
     max_retries: int,
     concurrency: int,
+    capture_reasoning: bool,
 ) -> List[WorkResult]:
     if not items:
         return []
@@ -519,11 +595,25 @@ def run_work_items(
     def _execute(item: WorkItem) -> WorkResult:
         for attempt in range(1, max_retries + 1):
             raw_response = ""
+            reasoning_block = ""
             try:
                 logging.info("Requesting LLM decision for %s (attempt %s/%s).", item.row_id, attempt, max_retries)
-                raw_response = client.generate(item.prompt)
-                rqs, explanation = parse_llm_response(raw_response, allowed_codes)
-                return WorkResult(row_index=item.row_index, status=STATUS_OK, rqs=rqs, explanation=explanation, raw_response=raw_response)
+                raw_response, reasoning_block = client.generate(item.prompt, capture_reasoning=capture_reasoning)
+                response_for_parsing = raw_response
+                if capture_reasoning and not reasoning_block:
+                    extracted_reasoning, remainder = extract_reasoning_block(raw_response)
+                    if extracted_reasoning:
+                        reasoning_block = extracted_reasoning
+                        response_for_parsing = remainder
+                rqs, explanation = parse_llm_response(response_for_parsing, allowed_codes)
+                return WorkResult(
+                    row_index=item.row_index,
+                    status=STATUS_OK,
+                    rqs=rqs,
+                    explanation=explanation,
+                    reasoning=reasoning_block,
+                    raw_response=raw_response,
+                )
             except LLMTimeoutError:
                 logging.error("LLM timeout for %s (attempt %s/%s).", item.row_id, attempt, max_retries)
                 if attempt == max_retries:
@@ -534,7 +624,13 @@ def run_work_items(
                     return WorkResult(row_index=item.row_index, status=STATUS_LLM_ERROR, explanation=str(exc))
             except ValueError as exc:
                 logging.error("Failed to parse LLM response for %s: %s", item.row_id, exc)
-                return WorkResult(row_index=item.row_index, status=STATUS_PARSE_ERROR, explanation=str(exc), raw_response=raw_response)
+                return WorkResult(
+                    row_index=item.row_index,
+                    status=STATUS_PARSE_ERROR,
+                    explanation=str(exc),
+                    reasoning=reasoning_block,
+                    raw_response=raw_response,
+                )
         return WorkResult(row_index=item.row_index, status=STATUS_LLM_ERROR, explanation="Unknown error")
 
     results: List[WorkResult] = []
@@ -588,6 +684,8 @@ def run(argv: Optional[Sequence[str]] = None) -> int:
         logging.info("Summary only mode. Status counts: %s", summary)
         return 0
 
+    prompt_dir = output_tsv.parent / "prompts" if args.dump_prompts else None
+
     items = collect_work_items(
         rows,
         bib_entries,
@@ -596,6 +694,7 @@ def run(argv: Optional[Sequence[str]] = None) -> int:
         bib_id_filter=args.bib_id,
         force=args.force,
         extra_keywords=extra_keywords,
+        prompt_dir=prompt_dir,
     )
 
     logging.info("Prepared %s work items for LLM processing.", len(items))
@@ -616,6 +715,7 @@ def run(argv: Optional[Sequence[str]] = None) -> int:
                 allowed_codes,
                 max_retries=args.max_retries,
                 concurrency=args.concurrency,
+                capture_reasoning=args.capture_reasoning,
             )
         for result in results:
             apply_result(rows[result.row_index], result)
