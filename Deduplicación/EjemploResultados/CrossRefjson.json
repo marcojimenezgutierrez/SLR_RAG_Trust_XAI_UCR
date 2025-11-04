@@ -1,0 +1,1237 @@
+{
+    "status": "ok",
+    "message-type": "work",
+    "message-version": "1.0.0",
+    "message": {
+        "indexed": {
+            "date-parts": [
+                [
+                    2025,
+                    10,
+                    1
+                ]
+            ],
+            "date-time": "2025-10-01T15:31:50Z",
+            "timestamp": 1759332710340,
+            "version": "3.38.0"
+        },
+        "reference-count": 116,
+        "publisher": "Springer Science and Business Media LLC",
+        "issue": "1",
+        "license": [
+            {
+                "start": {
+                    "date-parts": [
+                        [
+                            2025,
+                            3,
+                            6
+                        ]
+                    ],
+                    "date-time": "2025-03-06T00:00:00Z",
+                    "timestamp": 1741219200000
+                },
+                "content-version": "tdm",
+                "delay-in-days": 0,
+                "URL": "https://creativecommons.org/licenses/by/4.0"
+            },
+            {
+                "start": {
+                    "date-parts": [
+                        [
+                            2025,
+                            3,
+                            6
+                        ]
+                    ],
+                    "date-time": "2025-03-06T00:00:00Z",
+                    "timestamp": 1741219200000
+                },
+                "content-version": "vor",
+                "delay-in-days": 0,
+                "URL": "https://creativecommons.org/licenses/by/4.0"
+            }
+        ],
+        "content-domain": {
+            "domain": [
+                "link.springer.com"
+            ],
+            "crossmark-restriction": false
+        },
+        "short-container-title": [
+            "Humanit Soc Sci Commun"
+        ],
+        "abstract": "<jats:title>Abstract</jats:title>\n          <jats:p>Large language models (LLMs) have emerged as transformative tools with the potential to revolutionize philosophical counseling. By harnessing their advanced natural language processing and reasoning capabilities, LLMs offer innovative solutions to overcome limitations inherent in traditional counseling approaches—such as counselor scarcity, difficulties in identifying mental health issues, subjective outcome assessment, and cultural adaptation challenges. In this study, we explore cutting‐edge technical strategies—including prompt engineering, fine‐tuning, and retrieval‐augmented generation—to integrate LLMs into the counseling process. Our analysis demonstrates that LLM-assisted systems can provide counselor recommendations, streamline session evaluations, broaden service accessibility, and improve cultural adaptation. We also critically examine challenges related to user trust, data privacy, and the inherent inability of current AI systems to genuinely understand or empathize. Overall, this work presents both theoretical insights and practical guidelines for the responsible development and deployment of AI-assisted philosophical counseling practices.</jats:p>",
+        "DOI": "10.1057/s41599-025-04657-7",
+        "type": "journal-article",
+        "created": {
+            "date-parts": [
+                [
+                    2025,
+                    3,
+                    6
+                ]
+            ],
+            "date-time": "2025-03-06T21:14:16Z",
+            "timestamp": 1741295656000
+        },
+        "update-policy": "https://doi.org/10.1007/springer_crossmark_policy",
+        "source": "Crossref",
+        "is-referenced-by-count": 1,
+        "title": [
+            "Leveraging large language models to assist philosophical counseling: prospective techniques, value, and challenges"
+        ],
+        "prefix": "10.1057",
+        "volume": "12",
+        "author": [
+            {
+                "given": "Bokai",
+                "family": "Chen",
+                "sequence": "first",
+                "affiliation": [
+                ]
+            },
+            {
+                "given": "Weiwei",
+                "family": "Zheng",
+                "sequence": "additional",
+                "affiliation": [
+                ]
+            },
+            {
+                "given": "Liang",
+                "family": "Zhao",
+                "sequence": "additional",
+                "affiliation": [
+                ]
+            },
+            {
+                "ORCID": "https://orcid.org/0000-0001-6951-3785",
+                "authenticated-orcid": false,
+                "given": "Xiaojun",
+                "family": "Ding",
+                "sequence": "additional",
+                "affiliation": [
+                ]
+            }
+        ],
+        "member": "297",
+        "published-online": {
+            "date-parts": [
+                [
+                    2025,
+                    3,
+                    6
+                ]
+            ]
+        },
+        "reference": [
+            {
+                "key": "4657_CR1",
+                "unstructured": "Achenbach GB (1984) Philosophische praxis. Verlag für Philosophie Jürgen Dinter, Cologne"
+            },
+            {
+                "key": "4657_CR2",
+                "volume-title": "Introduction to philosophical practice: lectures, essays, conversations, and essays presenting philosophical practice from 1981 to 2009",
+                "author": "GB Achenbach",
+                "year": "2010",
+                "unstructured": "Achenbach GB (2010) Introduction to philosophical practice: lectures, essays, conversations, and essays presenting philosophical practice from 1981 to 2009. Verlag für Philosophie Jürgen Dinter, Cologne"
+            },
+            {
+                "key": "4657_CR3",
+                "doi-asserted-by": "publisher",
+                "first-page": "e57306",
+                "DOI": "10.2196/57306",
+                "volume": "11",
+                "author": "P Adhikary",
+                "year": "2024",
+                "unstructured": "Adhikary P, Srivastava A, Kumar S et al. (2024) Exploring the efficacy of large language models in summarizing mental health counseling sessions: benchmark study. JMIR Ment Health 11:e57306, https://mental.jmir.org/2024/1/e57306",
+                "journal-title": "JMIR Ment Health"
+            },
+            {
+                "key": "4657_CR4",
+                "doi-asserted-by": "publisher",
+                "first-page": "107273",
+                "DOI": "10.1016/j.chb.2022.107273",
+                "volume": "133",
+                "author": "ME Aktan",
+                "year": "2022",
+                "unstructured": "Aktan ME, Turhan Z, Dolu I (2022) Attitudes and perspectives towards the preferences for artificial intelligence in psychotherapy. Comput Hum Behav 133:107273. https://doi.org/10.1016/j.chb.2022.107273",
+                "journal-title": "Comput Hum Behav"
+            },
+            {
+                "key": "4657_CR5",
+                "doi-asserted-by": "publisher",
+                "first-page": "1236",
+                "DOI": "10.1016/j.sapharm.2023.05.016",
+                "volume": "19",
+                "author": "T Alqahtani",
+                "year": "2023",
+                "unstructured": "Alqahtani T, Badreldin HA, Alrashed M et al. (2023) The emergent role of artificial intelligence, natural learning processing, and large language models in higher education and research. Res Soc Adm Phar 19:1236–1242. https://doi.org/10.1016/j.sapharm.2023.05.016",
+                "journal-title": "Res Soc Adm Phar"
+            },
+            {
+                "issue": "1",
+                "key": "4657_CR6",
+                "doi-asserted-by": "publisher",
+                "first-page": "58",
+                "DOI": "10.5840/ijpp2004214",
+                "volume": "2",
+                "author": "LB Amir",
+                "year": "2004",
+                "unstructured": "Amir LB (2004) Three questionable assumptions of philosophical counseling. Int J Philos Pract 2(1):58–81. https://doi.org/10.5840/ijpp2004214",
+                "journal-title": "Int J Philos Pract"
+            },
+            {
+                "key": "4657_CR7",
+                "volume-title": "Practicing philosophy",
+                "author": "L Amir",
+                "year": "2015",
+                "unstructured": "Amir L, Fatić A (2015) Practicing philosophy. Cambridge Scholars Publishing, Newcastle upon Tyne"
+            },
+            {
+                "key": "4657_CR118",
+                "unstructured": "Atil B, Chittams A, Fu L, Ture F, Xu L, Baldwin B (2024) LLM stability: a detailed analysis with some surprises. https://arxiv.org/abs/2408.04667"
+            },
+            {
+                "issue": "3",
+                "key": "4657_CR8",
+                "doi-asserted-by": "publisher",
+                "first-page": "209",
+                "DOI": "10.5958/2249-0035.2015.00031.5",
+                "volume": "9",
+                "author": "BP Badola",
+                "year": "2015",
+                "unstructured": "Badola BP (2015) Decline of philosophy in academic discourses: a problem with the modern trends in knowledge. Quest J UGC-HRDC Nainital 9(3):209–215. https://doi.org/10.5958/2249-0035.2015.00031.5",
+                "journal-title": "Quest J UGC-HRDC Nainital"
+            },
+            {
+                "key": "4657_CR9",
+                "doi-asserted-by": "publisher",
+                "first-page": "107197",
+                "DOI": "10.1016/j.infsof.2023.107197",
+                "volume": "159",
+                "author": "N Balasubramaniam",
+                "year": "2023",
+                "unstructured": "Balasubramaniam N, Kauppinen M, Rannisto A, Hiekkanen K, Kujala S (2023) Transparency and explainability of AI systems: from ethical guidelines to requirements. Inf Softw Technol 159:107197. https://doi.org/10.1016/j.infsof.2023.107197",
+                "journal-title": "Inf Softw Technol"
+            },
+            {
+                "key": "4657_CR10",
+                "first-page": "1137",
+                "volume": "3",
+                "author": "Y Bengio",
+                "year": "2003",
+                "unstructured": "Bengio Y, Ducharme R, Vincent P, Janvin C (2003) A neural probabilistic language model. J Mach Learn Res 3:1137–1155",
+                "journal-title": "J Mach Learn Res"
+            },
+            {
+                "issue": "4",
+                "key": "4657_CR11",
+                "doi-asserted-by": "publisher",
+                "first-page": "579",
+                "DOI": "10.1080/17439760.2023.2257642",
+                "volume": "19",
+                "author": "AP Blyler",
+                "year": "2024",
+                "unstructured": "Blyler AP, Seligman ME (2024a) AI assistance for coaches and therapists. J Posit Psychol 19(4):579–591. https://doi.org/10.1080/17439760.2023.2257642",
+                "journal-title": "J Posit Psychol"
+            },
+            {
+                "issue": "4",
+                "key": "4657_CR12",
+                "doi-asserted-by": "publisher",
+                "first-page": "592",
+                "DOI": "10.1080/17439760.2023.2257666",
+                "volume": "19",
+                "author": "AP Blyler",
+                "year": "2024",
+                "unstructured": "Blyler AP, Seligman ME (2024b) Personal narrative and stream of consciousness: an AI approach. J Posit Psychol 19(4):592–598. https://doi.org/10.1080/17439760.2023.2257666",
+                "journal-title": "J Posit Psychol"
+            },
+            {
+                "key": "4657_CR13",
+                "unstructured": "Brown T, Mann B, Rtder N et al. (2020) Language models are few-shot learners. In: Proceedings of the 34th International Conference on Neural Information Processing Systems (NIPS). Curran Associates Inc., pp. 1877–1901"
+            },
+            {
+                "issue": "1-2",
+                "key": "4657_CR14",
+                "doi-asserted-by": "publisher",
+                "first-page": "347",
+                "DOI": "10.1016/S0004-3702(98)00055-1",
+                "volume": "103",
+                "author": "MA Boden",
+                "year": "1998",
+                "unstructured": "Boden MA (1998) Creativity and artificial intelligence. Artif Intell 103(1-2):347–356. https://doi.org/10.1016/S0004-3702(98)00055-1",
+                "journal-title": "Artif Intell"
+            },
+            {
+                "key": "4657_CR15",
+                "unstructured": "Bubeck S, Chandrasekaran V, Eldan R et al. (2023) Sparks of artificial general intelligence: early experiments with GPT-4. https://arxiv.org/abs/2303.12712"
+            },
+            {
+                "key": "4657_CR16",
+                "unstructured": "CBS News (2024) Google AI chatbot responds with a threatening message: “Human … Please die.” Available online: https://www.cbsnews.com/news/google-ai-chatbot-threatening-message-human-please-die/. Accessed on 28 Dec 2024"
+            },
+            {
+                "key": "4657_CR17",
+                "doi-asserted-by": "publisher",
+                "unstructured": "Chaturvedi A (2024) Exploring empathy in artificial intelligence: synthesis and paths for future research. Inf Discov Deliv. https://doi.org/10.1108/IDD-03-2024-0048",
+                "DOI": "10.1108/IDD-03-2024-0048"
+            },
+            {
+                "issue": "3",
+                "key": "4657_CR18",
+                "doi-asserted-by": "publisher",
+                "first-page": "1",
+                "DOI": "10.1145/3641289",
+                "volume": "15",
+                "author": "YP Chang",
+                "year": "2024",
+                "unstructured": "Chang YP, Wang X, Wang JD et al. (2024) A survey on evaluation of large language models. ACM Trans Intel Syst Tec 15(3):1–45. https://doi.org/10.1145/3641289",
+                "journal-title": "ACM Trans Intel Syst Tec"
+            },
+            {
+                "key": "4657_CR19",
+                "doi-asserted-by": "crossref",
+                "unstructured": "Chen Z, Deng JW, Zhou JF, Wu JCZ, Qian TY, Huang ML (2024) Depression detection in clinical interviews with LLM-empowered structural element graph. In: Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (Volume 1: Long Papers). ACL, pp. 8181–8194",
+                "DOI": "10.18653/v1/2024.naacl-long.452"
+            },
+            {
+                "issue": "4",
+                "key": "4657_CR20",
+                "doi-asserted-by": "publisher",
+                "first-page": "463",
+                "DOI": "10.1111/meta.12647",
+                "volume": "54",
+                "author": "G Clay",
+                "year": "2023",
+                "unstructured": "Clay G, Ontiveros C (2023) Philosophers ought to develop, theorize about, and use philosophically relevant AI. Metaphilosophy 54(4):463–479. https://doi.org/10.1111/meta.12647",
+                "journal-title": "Metaphilosophy"
+            },
+            {
+                "key": "4657_CR21",
+                "unstructured": "Cohen ED (2013) Theory and practice of logic-based therapy: integrating critical thinking and philosophy into psychotherapy. Cambridge Scholars Publishing, Newcastle upon Tyne"
+            },
+            {
+                "key": "4657_CR22",
+                "volume-title": "Philosophy, counseling, and psychotherapy",
+                "author": "ED Cohen",
+                "year": "2013",
+                "unstructured": "Cohen ED, Zinaich S (2013) Philosophy, counseling, and psychotherapy. Cambridge Scholars Publishing, Newcastle upon Tyne"
+            },
+            {
+                "key": "4657_CR23",
+                "doi-asserted-by": "publisher",
+                "first-page": "582",
+                "DOI": "10.1007/s10942-023-00532-z",
+                "volume": "42",
+                "author": "ED Cohen",
+                "year": "2024",
+                "unstructured": "Cohen ED, Piozzini B, Bapat C et al. (2024) A randomized, controlled, preliminary study to assess the efficacy of logic-based therapy in reducing anxiety and/or depression in family caregivers. J Ratio Emot Cogn Behav Ther 42:582–609. https://doi.org/10.1007/s10942-023-00532-z",
+                "journal-title": "J Ratio Emot Cogn Behav Ther"
+            },
+            {
+                "key": "4657_CR24",
+                "unstructured": "Cooper M, McLeod J (2010) Pluralistic counselling and psychotherapy. Sage"
+            },
+            {
+                "issue": "5",
+                "key": "4657_CR25",
+                "doi-asserted-by": "publisher",
+                "first-page": "415",
+                "DOI": "10.1111/j.1469-5812.2008.00483.x",
+                "volume": "43",
+                "author": "MF Daniel",
+                "year": "2011",
+                "unstructured": "Daniel MF, Auriac E (2011) Philosophy, critical thinking and philosophy for children. Educ Philos Theory 43(5):415–435. https://doi.org/10.1111/j.1469-5812.2008.00483.x",
+                "journal-title": "Educ Philos Theory"
+            },
+            {
+                "issue": "11",
+                "key": "4657_CR26",
+                "doi-asserted-by": "publisher",
+                "first-page": "688",
+                "DOI": "10.1038/s44159-023-00241-5",
+                "volume": "2",
+                "author": "D Demszky",
+                "year": "2023",
+                "unstructured": "Demszky D, Yang DY, Yeager D et al. (2023) Using large language models in psychology. Nat Rev Psychol 2(11):688–701. https://doi.org/10.1038/s44159-023-00241-5",
+                "journal-title": "Nat Rev Psychol"
+            },
+            {
+                "key": "4657_CR27",
+                "unstructured": "Devlin J, Chang MW, Lee K, Toutanova K (2019, June) Bert: pre-training of deep bidirectional transformers for language understanding. In: Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, volume 1 (long and short papers). ACL, pp. 4171–4186"
+            },
+            {
+                "issue": "1",
+                "key": "4657_CR28",
+                "doi-asserted-by": "publisher",
+                "first-page": "69",
+                "DOI": "10.3390/rel15010069",
+                "volume": "15",
+                "author": "XJ Ding",
+                "year": "2024",
+                "unstructured": "Ding XJ, Fu SR, Jiao CC, Yu F (2024a) Chinese philosophical practice toward self-cultivation: integrating Confucian wisdom into philosophical counseling. Religions 15(1):69. https://doi.org/10.3390/rel15010069",
+                "journal-title": "Religions"
+            },
+            {
+                "issue": "4-5",
+                "key": "4657_CR29",
+                "doi-asserted-by": "publisher",
+                "first-page": "517",
+                "DOI": "10.1111/meta.12702",
+                "volume": "55",
+                "author": "XJ Ding",
+                "year": "2024",
+                "unstructured": "Ding XJ, Harteloh P, Pan TQ, Yu F (2024b) The practical turn in philosophy: a revival of the ancient art of living through modern philosophical practice. Metaphilosophy 55(4-5):517–534. https://doi.org/10.1111/meta.12702",
+                "journal-title": "Metaphilosophy"
+            },
+            {
+                "issue": "1",
+                "key": "4657_CR30",
+                "doi-asserted-by": "publisher",
+                "first-page": "1617",
+                "DOI": "10.1057/s41599-024-04143-6",
+                "volume": "11",
+                "author": "XJ Ding",
+                "year": "2024",
+                "unstructured": "Ding XJ, Xie CF, Yu F (2024c) Beyond dissonance: the transformative power of thought analysis in philosophical practice. Humanit Soc Sci Commun 11(1):1617. https://doi.org/10.1057/s41599-024-04143-6",
+                "journal-title": "Humanit Soc Sci Commun"
+            },
+            {
+                "issue": "1",
+                "key": "4657_CR31",
+                "doi-asserted-by": "publisher",
+                "first-page": "494",
+                "DOI": "10.1057/s41599-024-02985-8",
+                "volume": "11",
+                "author": "XJ Ding",
+                "year": "2024",
+                "unstructured": "Ding XJ, Yu F (2024) Philosophical practice and its development in China: opportunities and challenges. Humanit Soc Sci Commun 11(1):494. https://doi.org/10.1057/s41599-024-02985-8",
+                "journal-title": "Humanit Soc Sci Commun"
+            },
+            {
+                "key": "4657_CR32",
+                "volume-title": "What computers can’t do: a critique of artificial reason",
+                "author": "HL Dreyfus",
+                "year": "1972",
+                "unstructured": "Dreyfus HL (1972) What computers can’t do: a critique of artificial reason. Harper & Row, New York"
+            },
+            {
+                "issue": "1",
+                "key": "4657_CR33",
+                "doi-asserted-by": "publisher",
+                "first-page": "43",
+                "DOI": "10.1037/a0022187",
+                "volume": "48",
+                "author": "R Elliott",
+                "year": "2011",
+                "unstructured": "Elliott R, Bohart AC, Watson JC, Greenberg LS (2011) Empathy. Psychotherapy 48(1):43–49. https://doi.org/10.1037/a0022187",
+                "journal-title": "Psychotherapy"
+            },
+            {
+                "issue": "4",
+                "key": "4657_CR34",
+                "doi-asserted-by": "publisher",
+                "first-page": "1419",
+                "DOI": "10.1007/s11406-016-9770-3",
+                "volume": "44",
+                "author": "A Fatić",
+                "year": "2016",
+                "unstructured": "Fatić A, Zagorac I (2016) The methodology of philosophical practice: eclecticism and/or integrativeness? Philosophia 44(4):1419–1438. https://doi.org/10.1007/s11406-016-9770-3",
+                "journal-title": "Philosophia"
+            },
+            {
+                "key": "4657_CR35",
+                "doi-asserted-by": "publisher",
+                "first-page": "1416307",
+                "DOI": "10.3389/feduc.2024.1416307",
+                "volume": "9",
+                "author": "MC Fink",
+                "year": "2024",
+                "unstructured": "Fink MC, Robinson SA, Ertl B (2024) AI-based avatars are changing the way we learn and teach: benefits and challenges. Front Educ 9:1416307. https://doi.org/10.3389/feduc.2024.1416307",
+                "journal-title": "Front Educ"
+            },
+            {
+                "key": "4657_CR36",
+                "doi-asserted-by": "crossref",
+                "unstructured": "Fu GH, Zhao Q, Li JQ et al. (2023) Enhancing psychological counseling with large language model: a multifaceted decision-support system for non-professionals. https://arxiv.org/abs/2308.15192",
+                "DOI": "10.2196/preprints.52656"
+            },
+            {
+                "key": "4657_CR37",
+                "doi-asserted-by": "publisher",
+                "unstructured": "Galitsky BA (2024) LLM-based personalized recommendations in health. Preprints. https://doi.org/10.20944/preprints202402.1709.v1",
+                "DOI": "10.20944/preprints202402.1709.v1"
+            },
+            {
+                "key": "4657_CR39",
+                "unstructured": "Gao YF, Xiong Y, Gao XY et al. (2024) Retrieval-augmented generation for large language models: a survey. https://arxiv.org/abs/2312.10997"
+            },
+            {
+                "issue": "2",
+                "key": "4657_CR40",
+                "first-page": "1",
+                "volume": "6",
+                "author": "S Gindi",
+                "year": "2015",
+                "unstructured": "Gindi S, Pilpel A (2015) Bridging the gap between philosophy and psychotherapy: an outline for the integration of philosophical counselling into therapeutic practice. J Humanit Ther 6(2):1–24",
+                "journal-title": "J Humanit Ther"
+            },
+            {
+                "key": "4657_CR41",
+                "unstructured": "Grimes P, Uliana RL (1998) Philosophical midwifery: a new paradigm for understanding human problems with its validation. Hyparxis Press, Costa Mesa, CA"
+            },
+            {
+                "key": "4657_CR42",
+                "doi-asserted-by": "publisher",
+                "first-page": "e57400",
+                "DOI": "10.2196/57400",
+                "volume": "11",
+                "author": "Z Guo",
+                "year": "2024",
+                "unstructured": "Guo Z, Lai A, Thygesen JH, Farrington J, Keen T, Li K (2024) Large language models for mental health applications: systematic review. JMIR Ment Health 11:e57400. https://doi.org/10.2196/57400",
+                "journal-title": "JMIR Ment Health"
+            },
+            {
+                "key": "4657_CR43",
+                "unstructured": "Hadot P (1995) Philosophy as a way of life: spiritual exercises from Socrates to Foucault. Davidson A (ed.). Translated by Chase M. Wiley-Blackwell, Oxford"
+            },
+            {
+                "issue": "1-3",
+                "key": "4657_CR44",
+                "doi-asserted-by": "publisher",
+                "first-page": "335",
+                "DOI": "10.1016/0167-2789(90)90087-6",
+                "volume": "42",
+                "author": "S Harnad",
+                "year": "1990",
+                "unstructured": "Harnad S (1990) The symbol grounding problem. Phys D 42(1-3):335–346. https://doi.org/10.1016/0167-2789(90)90087-6",
+                "journal-title": "Phys D"
+            },
+            {
+                "key": "4657_CR45",
+                "unstructured": "Heckmann G (1981) Socratic dialogue: reflections on technique. In: Gronbach K (ed.), Socratic philosophizing: selected writings. Vandenhoeck & Ruprecht, Göttingen, pp. 45–59"
+            },
+            {
+                "issue": "6",
+                "key": "4657_CR46",
+                "doi-asserted-by": "publisher",
+                "first-page": "83",
+                "DOI": "10.13793/j.cnki.42-1020/c.2024.06.010",
+                "volume": "51",
+                "author": "YH Hu",
+                "year": "2024",
+                "unstructured": "Hu YH (2024) From theoretical integration to complementary coexistence: an examination of the inclusiveness of Chinese civilization through the relationship between Confucianism and Daoism. J Hubei Univ Philos Soc Sci 51(6):83–91. https://doi.org/10.13793/j.cnki.42-1020/c.2024.06.010",
+                "journal-title": "J Hubei Univ Philos Soc Sci"
+            },
+            {
+                "key": "4657_CR47",
+                "doi-asserted-by": "publisher",
+                "first-page": "04070",
+                "DOI": "10.7189/jogh.14.04070",
+                "volume": "14",
+                "author": "Y Huang",
+                "year": "2024",
+                "unstructured": "Huang Y, Wu RP, He JT, Xiang YP (2024) Evaluating ChatGPT-4.0’s data analytic proficiency in epidemiological studies: a comparative analysis with SAS, SPSS, and R. J Glob Health 14:04070. https://doi.org/10.7189/jogh.14.04070",
+                "journal-title": "J Glob Health"
+            },
+            {
+                "key": "4657_CR48",
+                "doi-asserted-by": "crossref",
+                "unstructured": "Hume D (1739/2000) A treatise of human nature. Norton DF, Norton MJ (eds.). Oxford University Press, Oxford",
+                "DOI": "10.1093/oseo/instance.00046221"
+            },
+            {
+                "key": "4657_CR49",
+                "unstructured": "Kandpal N, Deng H, Roberts A, Wallace E, Raffel C (2023) Large language models struggle to learn long-tail knowledge. In: Proceedings of 40th International Conference on Machine Learning (ICML). JMLR.org., pp. 15696–15707"
+            },
+            {
+                "issue": "4",
+                "key": "4657_CR50",
+                "doi-asserted-by": "publisher",
+                "first-page": "206",
+                "DOI": "10.1080/10673220500243349",
+                "volume": "13",
+                "author": "P Kinderman",
+                "year": "2005",
+                "unstructured": "Kinderman P (2005) A psychological model of mental disorder. Harv Rev Psychiat 13(4):206–217. https://doi.org/10.1080/10673220500243349",
+                "journal-title": "Harv Rev Psychiat"
+            },
+            {
+                "key": "4657_CR51",
+                "doi-asserted-by": "publisher",
+                "first-page": "115667",
+                "DOI": "10.1016/j.psychres.2023.115667",
+                "volume": "333",
+                "author": "ON Kjell",
+                "year": "2023",
+                "unstructured": "Kjell ON, Kjell K, Schwartz HA (2023) Beyond rating scales: with targeted evaluation, language models are poised for psychological assessment. Psychiat Res 333:115667. https://doi.org/10.1016/j.psychres.2023.115667",
+                "journal-title": "Psychiat Res"
+            },
+            {
+                "issue": "1",
+                "key": "4657_CR52",
+                "doi-asserted-by": "publisher",
+                "first-page": "32",
+                "DOI": "10.12681/homvir.30316",
+                "volume": "5",
+                "author": "S Kiriakaki",
+                "year": "2022",
+                "unstructured": "Kiriakaki S, Tzovanou M, Sotiriou A, Lampou M, Varsamidou E (2022) Online counseling: advantages, disadvantages and ethical issues. Homo Virtualis 5(1):32–59. https://doi.org/10.12681/homvir.30316",
+                "journal-title": "Homo Virtualis"
+            },
+            {
+                "issue": "5",
+                "key": "4657_CR53",
+                "doi-asserted-by": "publisher",
+                "first-page": "558",
+                "DOI": "10.1037/0735-7028.36.5.558",
+                "volume": "36",
+                "author": "S Knapp",
+                "year": "2005",
+                "unstructured": "Knapp S, Tjeltveit AC (2005) A review and critical analysis of philosophical counseling. Prof Psychol-Res Pr 36(5):558–565. https://doi.org/10.1037/0735-7028.36.5.558",
+                "journal-title": "Prof Psychol-Res Pr"
+            },
+            {
+                "key": "4657_CR54",
+                "unstructured": "Kreimer R, Primero G (2017) The future of philosophical counseling: pseudoscience or interdisciplinary field? In: Amir L (ed.). New frontiers in philosophical practice. Cambridge Scholars Publishing, Newcastle upon Tyne, pp. 144–163"
+            },
+            {
+                "key": "4657_CR55",
+                "unstructured": "Kumar A, Raghunathan A, Jones R, Ma TY, Liang P (2022) Fine-tuning can distort pretrained features and underperform out-of-distribution. In: Proceedings of In International Conference on Learning Representations (ICLR). ICLR, pp. 1–42"
+            },
+            {
+                "key": "4657_CR56",
+                "doi-asserted-by": "publisher",
+                "unstructured": "Kuhail MA, Alturki N, Thomas J, Alkhalifa AK, Alshardan A (2024) Human-human vs human-AI therapy: an empirical study. Int J Hum-Comput Interact: 1–12. https://doi.org/10.1080/10447318.2024.2385001",
+                "DOI": "10.1080/10447318.2024.2385001"
+            },
+            {
+                "key": "4657_CR57",
+                "unstructured": "Lahav R, Tillmanns MV (eds) (1995) Essays on philosophical counseling. University Press of America, Lanham"
+            },
+            {
+                "issue": "9",
+                "key": "4657_CR58",
+                "doi-asserted-by": "publisher",
+                "first-page": "856",
+                "DOI": "10.1016/j.bpsc.2021.02.001",
+                "volume": "6",
+                "author": "EE Lee",
+                "year": "2021",
+                "unstructured": "Lee EE, Torous J, De Choudhury M et al. (2021) Artificial intelligence for mental health care: clinical applications, barriers, facilitators, and artificial wisdom. Biol Psychiatry Cogn Neurosci Neuroimaging 6(9):856–864. https://doi.org/10.1016/j.bpsc.2021.02.001",
+                "journal-title": "Biol Psychiatry Cogn Neurosci Neuroimaging"
+            },
+            {
+                "key": "4657_CR59",
+                "doi-asserted-by": "publisher",
+                "first-page": "e51232",
+                "DOI": "10.2196/51232",
+                "volume": "10",
+                "author": "I Levkovich",
+                "year": "2023",
+                "unstructured": "Levkovich I, Elyoseph Z (2023) Suicide risk assessments through the eyes of ChatGPT-3.5 versus ChatGPT-4: vignette study. JMIR Ment Health 10:e51232. https://doi.org/10.2196/51232",
+                "journal-title": "JMIR Ment Health"
+            },
+            {
+                "key": "4657_CR60",
+                "unstructured": "Liu JY, Huang ZY, Xiao T et al. (2024) SocraticLM: exploring socratic personalized teaching with large language models. In: The Thirty-eighth Annual Conference on Neural Information Processing Systems (NIPS). Curran Associates Inc. https://openreview.net/forum?id=qkoZgJhxsA"
+            },
+            {
+                "key": "4657_CR61",
+                "unstructured": "Liu JM, Li DH, Cao H, Ren TH, Liao ZY, Wu JM (2023) Chatcounselor: a large language models for mental health support. https://arxiv.org/abs/2309.15461"
+            },
+            {
+                "issue": "9",
+                "key": "4657_CR62",
+                "doi-asserted-by": "publisher",
+                "first-page": "1",
+                "DOI": "10.1145/3560815",
+                "volume": "55",
+                "author": "PF Liu",
+                "year": "2023",
+                "unstructured": "Liu PF, Yuan WZ, Fu JL, Jiang ZB, Hayashi H, Neubig G (2023) Pre-train, prompt, and predict: a systematic survey of prompting methods in natural language processing. ACM Comput Surv 55(9):1–35. https://doi.org/10.1145/3560815",
+                "journal-title": "ACM Comput Surv"
+            },
+            {
+                "issue": "1",
+                "key": "4657_CR63",
+                "doi-asserted-by": "publisher",
+                "first-page": "60",
+                "DOI": "10.1080/02580136.2013.810417",
+                "volume": "32",
+                "author": "D Louw",
+                "year": "2013",
+                "unstructured": "Louw D (2013) Defining philosophical counselling: an overview. S Afr J Philos 32(1):60–70. https://doi.org/10.1080/02580136.2013.810417",
+                "journal-title": "S Afr J Philos"
+            },
+            {
+                "key": "4657_CR64",
+                "doi-asserted-by": "crossref",
+                "unstructured": "Ma XB, Gong YY, He PC, Zhao H, Duan N (2023) Query rewriting in retrieval-augmented large language models. In: Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP). ACL, pp. 5303–5315",
+                "DOI": "10.18653/v1/2023.emnlp-main.322"
+            },
+            {
+                "key": "4657_CR65",
+                "volume-title": "Plato, not Prozac!: applying philosophy to everyday problems",
+                "author": "L Marinoff",
+                "year": "1999",
+                "unstructured": "Marinoff L (1999) Plato, not Prozac!: applying philosophy to everyday problems. HarperCollins, New York"
+            },
+            {
+                "key": "4657_CR66",
+                "volume-title": "Philosophical practice",
+                "author": "L Marinoff",
+                "year": "2002",
+                "unstructured": "Marinoff L (2002) Philosophical practice. Academic Press, San Diego, CA"
+            },
+            {
+                "key": "4657_CR67",
+                "unstructured": "Ministry of Education of the People’s Republic of China (2023) Number of regular students for normal courses in HEIs by discipline. http://www.moe.gov.cn/jyb_sjzl/moe_560/2021/quanguo/202301/t20230103_1037969.html. Accessed on 12 May 2024"
+            },
+            {
+                "key": "4657_CR68",
+                "unstructured": "Na HB (2024) CBT-LLM: a Chinese large language model for cognitive behavioral therapy-based mental health question answering. In: Proceedings of the 2024 Joint International Conference on Computational Linguistics, Language Resources and Evaluation (LREC-COLING). ELRA and ICCL, pp. 2930–2940"
+            },
+            {
+                "key": "4657_CR69",
+                "unstructured": "National Center for Education Statistics Database (2023) Table 322.10. Bachelor’s degrees conferred by postsecondary institutions, by field of study: selected academic years, 1970-71 through 2021-22. https://nces.ed.gov/programs/digest/d21/tables/dt21_322.10.asp. Accessed on 12 May 2024"
+            },
+            {
+                "key": "4657_CR70",
+                "volume-title": "Socratic method and critical philosophy: selected essays",
+                "author": "L Nelson",
+                "year": "1949",
+                "unstructured": "Nelson L (1949) Socratic method and critical philosophy: selected essays. Dover Publications, New York, NY"
+            },
+            {
+                "key": "4657_CR71",
+                "doi-asserted-by": "publisher",
+                "unstructured": "O'Neill R, Wang H (2021) Combatting student alienation: community building in the academic philosophy café. J Humanit Ther 12(1):7–25. https://doi.org/10.33252/jht.2021.06.12.1.7",
+                "DOI": "10.33252/jht.2021.06.12.1.7"
+            },
+            {
+                "issue": "1",
+                "key": "4657_CR72",
+                "doi-asserted-by": "publisher",
+                "first-page": "124",
+                "DOI": "10.5840/ijpp2022819",
+                "volume": "8",
+                "author": "A Nutas",
+                "year": "2022",
+                "unstructured": "Nutas A (2022) The artificial philosophical counselor: on the possibility of automating philosophical counseling. Int J Philos Pr 8(1):124–136. https://doi.org/10.5840/ijpp2022819",
+                "journal-title": "Int J Philos Pr"
+            },
+            {
+                "issue": "1",
+                "key": "4657_CR73",
+                "doi-asserted-by": "publisher",
+                "first-page": "1",
+                "DOI": "10.1038/s44277-024-00010-z",
+                "volume": "2",
+                "author": "N Obradovich",
+                "year": "2024",
+                "unstructured": "Obradovich N, Khalsa SS, Khan WU et al. (2024) Opportunities and risks of large language models in psychiatry. NPP—Digit Psychiatry Neurosci 2(1):1–8. https://doi.org/10.1038/s44277-024-00010-z",
+                "journal-title": "NPP—Digit Psychiatry Neurosci"
+            },
+            {
+                "key": "4657_CR74",
+                "doi-asserted-by": "publisher",
+                "unstructured": "Oliveira FGD, Belitski M, Kakabadse N, Theodorakopoulos N (2024) Unveiling the potential of digital human avatars in modern marketing strategies. Int Mark Rev. https://doi.org/10.1108/IMR-12-2023-0339",
+                "DOI": "10.1108/IMR-12-2023-0339"
+            },
+            {
+                "key": "4657_CR75",
+                "unstructured": "Park S, Kulkarni C (2023) Thinking assistants: LLM-based conversational assistants that help users think by asking rather than answering. https://arxiv.org/abs/2312.06024"
+            },
+            {
+                "key": "4657_CR76",
+                "doi-asserted-by": "publisher",
+                "unstructured": "Patel SC, Fan J (2023) Identification and description of emotions by current large language models. bioRxiv. https://doi.org/10.1101/2023.07.17.549421",
+                "DOI": "10.1101/2023.07.17.549421"
+            },
+            {
+                "key": "4657_CR77",
+                "doi-asserted-by": "crossref",
+                "unstructured": "Pearl J (1988) Probabilistic reasoning in intelligent systems: networks of plausible inference. Morgan Kaufmann, San Francisco, CA",
+                "DOI": "10.1016/B978-0-08-051489-5.50008-4"
+            },
+            {
+                "key": "4657_CR78",
+                "doi-asserted-by": "crossref",
+                "unstructured": "Petroni F, Rocktäschel T, Lewis P et al. (2019) Language models as knowledge bases? In: Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP). ACL, pp. 2463–2473",
+                "DOI": "10.18653/v1/D19-1250"
+            },
+            {
+                "key": "4657_CR117",
+                "doi-asserted-by": "publisher",
+                "unstructured": "Rabani ST, Khanday AMUD, Khan QR, Hajam UA, Imran AS, Kastrati Z (2023) Detecting suicidality on social media: machine learning at rescue. Egypt Inform J 24(2):291–302. https://doi.org/10.1016/j.eij.2023.04.003",
+                "DOI": "10.1016/j.eij.2023.04.003"
+            },
+            {
+                "key": "4657_CR80",
+                "unstructured": "Radford A, Narasimhan K, Salimans T, Sutskever I (2018) Improving language understanding by generative pre-training. https://openai.com/research/language-unsupervised"
+            },
+            {
+                "key": "4657_CR81",
+                "doi-asserted-by": "publisher",
+                "first-page": "47",
+                "DOI": "10.1057/s41599-023-02567-0",
+                "volume": "11",
+                "author": "P Raile",
+                "year": "2024",
+                "unstructured": "Raile P (2024) The usefulness of ChatGPT for psychotherapists and patients. Humanit Soc Sci Commun 11:47. https://doi.org/10.1057/s41599-023-02567-0",
+                "journal-title": "Humanit Soc Sci Commun"
+            },
+            {
+                "issue": "8",
+                "key": "4657_CR82",
+                "doi-asserted-by": "publisher",
+                "first-page": "136",
+                "DOI": "10.59209/ircep.v3i8.60",
+                "volume": "3",
+                "author": "R Repetti",
+                "year": "2023",
+                "unstructured": "Repetti R (2023) A sampling of philosophical counseling frameworks, tools, and practices. Interdiscip Res Couns Ethics Philos 3(8):136–195. https://doi.org/10.59209/ircep.v3i8.60",
+                "journal-title": "Interdiscip Res Couns Ethics Philos"
+            },
+            {
+                "key": "4657_CR83",
+                "doi-asserted-by": "crossref",
+                "unstructured": "Ringle M (2019) Artificial intelligence and semantic theory. In: Simon TW, Scholes RJ (eds). Language, mind, and brain. Psychology Press, New York, pp. 45–63",
+                "DOI": "10.4324/9781315792286-5"
+            },
+            {
+                "key": "4657_CR84",
+                "doi-asserted-by": "publisher",
+                "first-page": "e56529",
+                "DOI": "10.2196/56529",
+                "volume": "11",
+                "author": "M Rubin",
+                "year": "2024",
+                "unstructured": "Rubin M, Arnon H, Huppert JD, Perry A (2024) Considering the role of human empathy in AI-driven therapy. JMIR Ment Health 11:e56529. https://doi.org/10.2196/56529",
+                "journal-title": "JMIR Ment Health"
+            },
+            {
+                "issue": "1",
+                "key": "4657_CR85",
+                "doi-asserted-by": "publisher",
+                "first-page": "39",
+                "DOI": "10.1177/096973309700400105",
+                "volume": "4",
+                "author": "P Savage",
+                "year": "1997",
+                "unstructured": "Savage P (1997) Philosophical counselling. Nurs Ethics 4(1):39–48",
+                "journal-title": "Nurs Ethics"
+            },
+            {
+                "issue": "3",
+                "key": "4657_CR86",
+                "doi-asserted-by": "publisher",
+                "first-page": "417",
+                "DOI": "10.1017/S0140525X00005756",
+                "volume": "3",
+                "author": "JR Searle",
+                "year": "1980",
+                "unstructured": "Searle JR (1980) Minds, brains, and programs. Behav Brain Sci 3(3):417–424. https://doi.org/10.1017/S0140525X00005756",
+                "journal-title": "Behav Brain Sci"
+            },
+            {
+                "key": "4657_CR87",
+                "doi-asserted-by": "publisher",
+                "unstructured": "Schaaff K, Reinig C, Schlippe T (2023) Exploring ChatGPT’s empathic abilities. In: 2023 11th International Conference on Affective Computing and Intelligent Interaction (ACII), pp. 1–8. https://doi.org/10.1109/ACII59096.2023.10388208",
+                "DOI": "10.1109/ACII59096.2023.10388208"
+            },
+            {
+                "key": "4657_CR88",
+                "unstructured": "Scheler M (1913/1970) The nature of sympathy. Translated by P. Heath. Archon Books, Hamden, CT"
+            },
+            {
+                "key": "4657_CR89",
+                "doi-asserted-by": "crossref",
+                "unstructured": "Schuster SC (1999) Philosophy practice: an alternative to counseling and psychotherapy. Praeger, Westport & London",
+                "DOI": "10.5040/9798400696824"
+            },
+            {
+                "issue": "2",
+                "key": "4657_CR90",
+                "doi-asserted-by": "publisher",
+                "first-page": "237",
+                "DOI": "10.1111/mila.12466",
+                "volume": "39",
+                "author": "E Schwitzgebel",
+                "year": "2023",
+                "unstructured": "Schwitzgebel E, Schwitzgebel D, Strasser A (2023) Creating a large language model of a philosopher. Mind Lang 39(2):237–259. https://doi.org/10.1111/mila.12466",
+                "journal-title": "Mind Lang"
+            },
+            {
+                "key": "4657_CR91",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.4324/9780203850664",
+                "volume-title": "Embodied cognition",
+                "author": "L Shapiro",
+                "year": "2010",
+                "unstructured": "Shapiro L (2010) Embodied cognition. Routledge, New York, NY"
+            },
+            {
+                "issue": "1",
+                "key": "4657_CR92",
+                "doi-asserted-by": "publisher",
+                "first-page": "46",
+                "DOI": "10.1038/s42256-022-00593-2",
+                "volume": "5",
+                "author": "A Sharma",
+                "year": "2023",
+                "unstructured": "Sharma A, Lin IW, Miner AS, Atkins DC, Althoff T (2023) Human–AI collaboration enables more empathic conversations in text-based peer-to-peer mental health support. Nat Mach Intell 5(1):46–57. https://doi.org/10.1038/s42256-022-00593-2",
+                "journal-title": "Nat Mach Intell"
+            },
+            {
+                "key": "4657_CR93",
+                "doi-asserted-by": "publisher",
+                "first-page": "496",
+                "DOI": "10.1038/s42256-024-00841-7",
+                "volume": "6",
+                "author": "G Shteynberg",
+                "year": "2024",
+                "unstructured": "Shteynberg G, Halpern J, Sadovnik A et al. (2024) Does it matter if empathic AI has no empathy? Nat Mach Intell 6:496–497. https://doi.org/10.1038/s42256-024-00841-7",
+                "journal-title": "Nat Mach Intell"
+            },
+            {
+                "issue": "2",
+                "key": "4657_CR94",
+                "doi-asserted-by": "publisher",
+                "first-page": "131",
+                "DOI": "10.1080/02580136.2018.1432528",
+                "volume": "37",
+                "author": "R Sivil",
+                "year": "2018",
+                "unstructured": "Sivil R, Clare J (2018) Towards a taxonomy of philosophical counselling. S Afr J Philos 37(2):131–142. https://doi.org/10.1080/02580136.2018.1432528",
+                "journal-title": "S Afr J Philos"
+            },
+            {
+                "key": "4657_CR95",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.4324/9780203945735",
+                "volume-title": "The ethics of care and empathy",
+                "author": "M Slote",
+                "year": "2007",
+                "unstructured": "Slote M (2007) The ethics of care and empathy. Routledge, London"
+            },
+            {
+                "key": "4657_CR96",
+                "doi-asserted-by": "publisher",
+                "unstructured": "Smithson R, Zweber A (2024) Reviving the philosophical dialogue with large language models. Teach Philos. https://doi.org/10.5840/teachphil2024424196",
+                "DOI": "10.5840/teachphil2024424196"
+            },
+            {
+                "issue": "1",
+                "key": "4657_CR97",
+                "doi-asserted-by": "publisher",
+                "first-page": "3",
+                "DOI": "10.1177/2345678906293042",
+                "volume": "1",
+                "author": "A Tashakkori",
+                "year": "2007",
+                "unstructured": "Tashakkori A, Creswell JW (2007) The new era of mixed methods. J Mix Methods Res 1(1):3–7. https://doi.org/10.1177/2345678906293042",
+                "journal-title": "J Mix Methods Res"
+            },
+            {
+                "key": "4657_CR98",
+                "unstructured": "Touvron H, Lavril T, Izacard G et al. (2023a) Llama: open and efficient foundation language models. https://arxiv.org/abs/2302.13971"
+            },
+            {
+                "key": "4657_CR99",
+                "unstructured": "Touvron H, Martin L, Stone K et al. (2023b) Llama 2: open foundation and fine-tuned chat models. https://arxiv.org/abs/2307.09288"
+            },
+            {
+                "key": "4657_CR100",
+                "volume-title": "Alone together: why we expect more from technology and less from each other",
+                "author": "S Turkle",
+                "year": "2011",
+                "unstructured": "Turkle S (2011) Alone together: why we expect more from technology and less from each other. Basic Books, New York"
+            },
+            {
+                "key": "4657_CR101",
+                "unstructured": "Turpin M, Michael J, Perez E, Bowman SR (2023) Language models don’t always say what they think: unfaithful explanations in chain-of-thought prompting. In: Proceedings of the 37th International Conference on Neural Information Processing Systems (NIPS). Curran Associates Inc., pp. 74952–74965"
+            },
+            {
+                "key": "4657_CR102",
+                "unstructured": "Vaswani A, Shazeer N, Parmar N et al. (2017) Attention is all you need. In: Proceedings of the 31st International Conference on Neural Information Processing Systems (NIPS). Curran Associates Inc., pp. 6000–6010"
+            },
+            {
+                "key": "4657_CR103",
+                "doi-asserted-by": "crossref",
+                "unstructured": "Varela FJ, Thompson E, Rosch E (1991) The embodied mind: cognitive science and human experience. MIT Press, Cambridge, MA",
+                "DOI": "10.7551/mitpress/6730.001.0001"
+            },
+            {
+                "issue": "7",
+                "key": "4657_CR104",
+                "doi-asserted-by": "publisher",
+                "first-page": "5731",
+                "DOI": "10.1007/s10462-022-10144-1",
+                "volume": "55",
+                "author": "M Wankhade",
+                "year": "2022",
+                "unstructured": "Wankhade M, Rao ACS, Kulkarni C (2022) A survey on sentiment analysis methods, applications, and challenges. Artif Intell Rev 55(7):5731–5780. https://doi.org/10.1007/s10462-022-10144-1",
+                "journal-title": "Artif Intell Rev"
+            },
+            {
+                "key": "4657_CR105",
+                "unstructured": "Wang M, Vu TT, Wang Y, Shareghi E, Haffari G (2024) Conversational simulMT: efficient simultaneous translation with large language models. https://arxiv.org/abs/2402.10552"
+            },
+            {
+                "issue": "1",
+                "key": "4657_CR106",
+                "first-page": "60",
+                "volume": "9",
+                "author": "X Wei",
+                "year": "2013",
+                "unstructured": "Wei X, Li Q (2013) The Confucian value of harmony and its influence on Chinese social interaction. Cross-Cult Commun 9(1):60–66",
+                "journal-title": "Cross-Cult Commun"
+            },
+            {
+                "key": "4657_CR107",
+                "unstructured": "Wei J, Wang XZ, Schuurmans D et al. (2022) Chain-of-thought prompting elicits reasoning in large language models. In: Proceedings of the 36th International Conference on Neural Information Processing Systems (NIPS). Curran Associates Inc., pp. 24824–24837"
+            },
+            {
+                "key": "4657_CR108",
+                "doi-asserted-by": "publisher",
+                "unstructured": "Wilson M (2002) Six views of embodied cognition. Psychonom Bullet Rev 9:625–636. https://doi.org/10.3758/BF03196322",
+                "DOI": "10.3758/BF03196322"
+            },
+            {
+                "issue": "2",
+                "key": "4657_CR109",
+                "doi-asserted-by": "publisher",
+                "first-page": "102",
+                "DOI": "10.1016/j.jiixd.2023.10.007",
+                "volume": "2",
+                "author": "XD Wu",
+                "year": "2024",
+                "unstructured": "Wu XD, Duan R, Ni JB (2024) Unveiling security, privacy, and ethical concerns of ChatGPT. J Inf Intell 2(2):102–115. https://doi.org/10.1016/j.jiixd.2023.10.007",
+                "journal-title": "J Inf Intell"
+            },
+            {
+                "issue": "1",
+                "key": "4657_CR110",
+                "first-page": "1",
+                "volume": "8",
+                "author": "XH Xu",
+                "year": "2024",
+                "unstructured": "Xu XH, Yao BS, Dong YZ et al. (2024) Mental-LLM: leveraging large language models for mental health prediction via online text data. Proc ACM Interact Mob Wearable Ubiquit Technol (IMWUT) 8(1):1–32",
+                "journal-title": "Proc ACM Interact Mob Wearable Ubiquit Technol (IMWUT)"
+            },
+            {
+                "issue": "2",
+                "key": "4657_CR111",
+                "doi-asserted-by": "publisher",
+                "first-page": "100211",
+                "DOI": "10.1016/j.hcc.2024.100211",
+                "volume": "4",
+                "author": "Y Yao",
+                "year": "2024",
+                "unstructured": "Yao Y, Duan JH, Xu KD et al. (2024) A survey on large language model (LLM) security and privacy: the good, the bad, and the ugly. High-Confid Comput 4(2):100211. https://doi.org/10.1016/j.hcc.2024.100211",
+                "journal-title": "High-Confid Comput"
+            },
+            {
+                "key": "4657_CR112",
+                "unstructured": "Zhang B, Haddow B, Birch A (2023) Prompting large language model for machine translation: a case study. In: Proceedings of 40th International Conference on Machine Learning (ICML). JMLR.org., pp. 41092–41110"
+            },
+            {
+                "issue": "4",
+                "key": "4657_CR113",
+                "first-page": "14",
+                "volume": "28",
+                "author": "J Zhang",
+                "year": "2012",
+                "unstructured": "Zhang J, Yan B (2012) The enlightenment of Confucian traditional values on localized psychological counseling and therapy. Acad Exch 28(4):14–17",
+                "journal-title": "Acad Exch"
+            },
+            {
+                "issue": "2",
+                "key": "4657_CR114",
+                "doi-asserted-by": "publisher",
+                "first-page": "1",
+                "DOI": "10.1145/3639372",
+                "volume": "15",
+                "author": "H Zhao",
+                "year": "2024",
+                "unstructured": "Zhao H, Chen H, Yang F et al. (2024) Explainability for large language models: a survey. ACM T Intel Syst Tec 15(2):1–38. https://doi.org/10.1145/3639372",
+                "journal-title": "ACM T Intel Syst Tec"
+            },
+            {
+                "issue": "2",
+                "key": "4657_CR115",
+                "doi-asserted-by": "publisher",
+                "first-page": "294",
+                "DOI": "10.3724/SP.J.1042.2018.00294",
+                "volume": "26",
+                "author": "SG Zhou",
+                "year": "2018",
+                "unstructured": "Zhou SG, Zhang XY (2018) Selecting the best treatment: client-treatment match. Adv Psychol Sci 26(2):294–305",
+                "journal-title": "Adv Psychol Sci"
+            },
+            {
+                "key": "4657_CR116",
+                "unstructured": "Zhu YT, Yuan HY, Wang ST et al. (2023) Large language models for information retrieval: a survey. https://arxiv.org/abs/2308.07107"
+            }
+        ],
+        "container-title": [
+            "Humanities and Social Sciences Communications"
+        ],
+        "original-title": [
+        ],
+        "language": "en",
+        "link": [
+            {
+                "URL": "https://www.nature.com/articles/s41599-025-04657-7.pdf",
+                "content-type": "application/pdf",
+                "content-version": "vor",
+                "intended-application": "text-mining"
+            },
+            {
+                "URL": "https://www.nature.com/articles/s41599-025-04657-7",
+                "content-type": "text/html",
+                "content-version": "vor",
+                "intended-application": "text-mining"
+            },
+            {
+                "URL": "https://www.nature.com/articles/s41599-025-04657-7.pdf",
+                "content-type": "application/pdf",
+                "content-version": "vor",
+                "intended-application": "similarity-checking"
+            }
+        ],
+        "deposited": {
+            "date-parts": [
+                [
+                    2025,
+                    3,
+                    7
+                ]
+            ],
+            "date-time": "2025-03-07T12:02:35Z",
+            "timestamp": 1741348955000
+        },
+        "score": 1,
+        "resource": {
+            "primary": {
+                "URL": "https://www.nature.com/articles/s41599-025-04657-7"
+            }
+        },
+        "subtitle": [
+        ],
+        "short-title": [
+        ],
+        "issued": {
+            "date-parts": [
+                [
+                    2025,
+                    3,
+                    6
+                ]
+            ]
+        },
+        "references-count": 116,
+        "journal-issue": {
+            "issue": "1",
+            "published-online": {
+                "date-parts": [
+                    [
+                        2025,
+                        12
+                    ]
+                ]
+            }
+        },
+        "alternative-id": [
+            "4657"
+        ],
+        "URL": "https://doi.org/10.1057/s41599-025-04657-7",
+        "relation": {
+        },
+        "ISSN": [
+            "2662-9992"
+        ],
+        "issn-type": [
+            {
+                "type": "electronic",
+                "value": "2662-9992"
+            }
+        ],
+        "subject": [
+        ],
+        "published": {
+            "date-parts": [
+                [
+                    2025,
+                    3,
+                    6
+                ]
+            ]
+        },
+        "assertion": [
+            {
+                "value": "1 August 2024",
+                "order": 1,
+                "name": "received",
+                "label": "Received",
+                "group": {
+                    "name": "ArticleHistory",
+                    "label": "Article History"
+                }
+            },
+            {
+                "value": "24 February 2025",
+                "order": 2,
+                "name": "accepted",
+                "label": "Accepted",
+                "group": {
+                    "name": "ArticleHistory",
+                    "label": "Article History"
+                }
+            },
+            {
+                "value": "6 March 2025",
+                "order": 3,
+                "name": "first_online",
+                "label": "First Online",
+                "group": {
+                    "name": "ArticleHistory",
+                    "label": "Article History"
+                }
+            },
+            {
+                "value": "Xiaojun Ding was a member of the Editorial Board of this journal at the time of acceptance for publication. The manuscript was assessed in line with the journal’s standard editorial processes.",
+                "order": 1,
+                "name": "Ethics",
+                "group": {
+                    "name": "EthicsHeading",
+                    "label": "Competing interests"
+                }
+            },
+            {
+                "value": "It does not apply to this article as it does not contain any studies with human participants.",
+                "order": 2,
+                "name": "Ethics",
+                "group": {
+                    "name": "EthicsHeading",
+                    "label": "Ethical approval"
+                }
+            },
+            {
+                "value": "It does not apply to this article as it does not contain any studies with human participants.",
+                "order": 3,
+                "name": "Ethics",
+                "group": {
+                    "name": "EthicsHeading",
+                    "label": "Informed consent"
+                }
+            }
+        ],
+        "article-number": "335"
+    }
+}

@@ -1,0 +1,450 @@
+{
+    "id": "https://openalex.org/W4408177618",
+    "doi": "https://doi.org/10.1057/s41599-025-04657-7",
+    "title": "Leveraging large language models to assist philosophical counseling: prospective techniques, value, and challenges",
+    "display_name": "Leveraging large language models to assist philosophical counseling: prospective techniques, value, and challenges",
+    "publication_year": 2025,
+    "publication_date": "2025-03-06",
+    "ids": {
+        "openalex": "https://openalex.org/W4408177618",
+        "doi": "https://doi.org/10.1057/s41599-025-04657-7"
+    },
+    "language": "en",
+    "primary_location": {
+        "is_oa": true,
+        "landing_page_url": "https://doi.org/10.1057/s41599-025-04657-7",
+        "pdf_url": null,
+        "source": {
+            "id": "https://openalex.org/S4210206302",
+            "display_name": "Humanities and Social Sciences Communications",
+            "issn_l": "2662-9992",
+            "issn": [
+                "2662-9992"
+            ],
+            "is_oa": true,
+            "is_in_doaj": true,
+            "is_indexed_in_scopus": true,
+            "is_core": true,
+            "host_organization": "https://openalex.org/P4310319702",
+            "host_organization_name": "Palgrave Macmillan",
+            "host_organization_lineage": [
+                "https://openalex.org/P4310319964",
+                "https://openalex.org/P4310319702"
+            ],
+            "host_organization_lineage_names": [
+                "Macmillan Publishers",
+                "Palgrave Macmillan"
+            ],
+            "type": "journal"
+        },
+        "license": "cc-by",
+        "license_id": "https://openalex.org/licenses/cc-by",
+        "version": "publishedVersion",
+        "is_accepted": true,
+        "is_published": true
+    },
+    "type": "article",
+    "type_crossref": "journal-article",
+    "indexed_in": [
+        "crossref"
+    ],
+    "open_access": {
+        "is_oa": true,
+        "oa_status": "gold",
+        "oa_url": "https://doi.org/10.1057/s41599-025-04657-7",
+        "any_repository_has_fulltext": false
+    },
+    "authorships": [
+        {
+            "author_position": "first",
+            "author": {
+                "id": "https://openalex.org/A5090693065",
+                "display_name": "Bokai Chen",
+                "orcid": "https://orcid.org/0000-0001-6246-0975"
+            },
+            "institutions": [
+            ],
+            "countries": [
+            ],
+            "is_corresponding": false,
+            "raw_author_name": "Bokai Chen",
+            "raw_affiliation_strings": [
+            ],
+            "affiliations": [
+            ]
+        },
+        {
+            "author_position": "middle",
+            "author": {
+                "id": "https://openalex.org/A5100401127",
+                "display_name": "Weiwei Zheng",
+                "orcid": "https://orcid.org/0000-0002-8657-4210"
+            },
+            "institutions": [
+            ],
+            "countries": [
+            ],
+            "is_corresponding": false,
+            "raw_author_name": "Weiwei Zheng",
+            "raw_affiliation_strings": [
+            ],
+            "affiliations": [
+            ]
+        },
+        {
+            "author_position": "middle",
+            "author": {
+                "id": "https://openalex.org/A5083541132",
+                "display_name": "Liang Zhao",
+                "orcid": "https://orcid.org/0000-0002-7541-9696"
+            },
+            "institutions": [
+            ],
+            "countries": [
+            ],
+            "is_corresponding": false,
+            "raw_author_name": "Liang Zhao",
+            "raw_affiliation_strings": [
+            ],
+            "affiliations": [
+            ]
+        },
+        {
+            "author_position": "last",
+            "author": {
+                "id": "https://openalex.org/A5088509786",
+                "display_name": "Xiaojun Ding",
+                "orcid": "https://orcid.org/0000-0001-6951-3785"
+            },
+            "institutions": [
+            ],
+            "countries": [
+            ],
+            "is_corresponding": false,
+            "raw_author_name": "Xiaojun Ding",
+            "raw_affiliation_strings": [
+            ],
+            "affiliations": [
+            ]
+        }
+    ],
+    "institution_assertions": [
+    ],
+    "countries_distinct_count": 0,
+    "institutions_distinct_count": 0,
+    "corresponding_author_ids": [
+    ],
+    "corresponding_institution_ids": [
+    ],
+    "apc_list": {
+        "value": 990,
+        "currency": "GBP",
+        "value_usd": 1214
+    },
+    "apc_paid": {
+        "value": 990,
+        "currency": "GBP",
+        "value_usd": 1214
+    },
+    "fwci": 18.237,
+    "has_fulltext": false,
+    "cited_by_count": 1,
+    "citation_normalized_percentile": {
+        "value": 0.999857,
+        "is_in_top_1_percent": true,
+        "is_in_top_10_percent": true
+    },
+    "cited_by_percentile_year": {
+        "min": 87,
+        "max": 95
+    },
+    "biblio": {
+        "volume": "12",
+        "issue": "1",
+        "first_page": null,
+        "last_page": null
+    },
+    "is_retracted": false,
+    "is_paratext": false,
+    "primary_topic": {
+        "id": "https://openalex.org/T13497",
+        "display_name": "Hermeneutics and Narrative Identity",
+        "score": 0.9556,
+        "subfield": {
+            "id": "https://openalex.org/subfields/1211",
+            "display_name": "Philosophy"
+        },
+        "field": {
+            "id": "https://openalex.org/fields/12",
+            "display_name": "Arts and Humanities"
+        },
+        "domain": {
+            "id": "https://openalex.org/domains/2",
+            "display_name": "Social Sciences"
+        }
+    },
+    "topics": [
+        {
+            "id": "https://openalex.org/T13497",
+            "display_name": "Hermeneutics and Narrative Identity",
+            "score": 0.9556,
+            "subfield": {
+                "id": "https://openalex.org/subfields/1211",
+                "display_name": "Philosophy"
+            },
+            "field": {
+                "id": "https://openalex.org/fields/12",
+                "display_name": "Arts and Humanities"
+            },
+            "domain": {
+                "id": "https://openalex.org/domains/2",
+                "display_name": "Social Sciences"
+            }
+        },
+        {
+            "id": "https://openalex.org/T10028",
+            "display_name": "Topic Modeling",
+            "score": 0.9551,
+            "subfield": {
+                "id": "https://openalex.org/subfields/1702",
+                "display_name": "Artificial Intelligence"
+            },
+            "field": {
+                "id": "https://openalex.org/fields/17",
+                "display_name": "Computer Science"
+            },
+            "domain": {
+                "id": "https://openalex.org/domains/3",
+                "display_name": "Physical Sciences"
+            }
+        },
+        {
+            "id": "https://openalex.org/T11537",
+            "display_name": "Ethics in medical practice",
+            "score": 0.9303,
+            "subfield": {
+                "id": "https://openalex.org/subfields/3600",
+                "display_name": "General Health Professions"
+            },
+            "field": {
+                "id": "https://openalex.org/fields/36",
+                "display_name": "Health Professions"
+            },
+            "domain": {
+                "id": "https://openalex.org/domains/4",
+                "display_name": "Health Sciences"
+            }
+        }
+    ],
+    "keywords": [
+        {
+            "id": "https://openalex.org/keywords/value",
+            "display_name": "Value (mathematics)",
+            "score": 0.58513194
+        }
+    ],
+    "concepts": [
+        {
+            "id": "https://openalex.org/C2776291640",
+            "wikidata": "https://www.wikidata.org/wiki/Q2912517",
+            "display_name": "Value (mathematics)",
+            "level": 2,
+            "score": 0.58513194
+        },
+        {
+            "id": "https://openalex.org/C41008148",
+            "wikidata": "https://www.wikidata.org/wiki/Q21198",
+            "display_name": "Computer science",
+            "level": 0,
+            "score": 0.3595708
+        },
+        {
+            "id": "https://openalex.org/C119857082",
+            "wikidata": "https://www.wikidata.org/wiki/Q2539",
+            "display_name": "Machine learning",
+            "level": 1,
+            "score": 0.0802629
+        }
+    ],
+    "mesh": [
+    ],
+    "locations_count": 1,
+    "locations": [
+        {
+            "is_oa": true,
+            "landing_page_url": "https://doi.org/10.1057/s41599-025-04657-7",
+            "pdf_url": null,
+            "source": {
+                "id": "https://openalex.org/S4210206302",
+                "display_name": "Humanities and Social Sciences Communications",
+                "issn_l": "2662-9992",
+                "issn": [
+                    "2662-9992"
+                ],
+                "is_oa": true,
+                "is_in_doaj": true,
+                "is_indexed_in_scopus": true,
+                "is_core": true,
+                "host_organization": "https://openalex.org/P4310319702",
+                "host_organization_name": "Palgrave Macmillan",
+                "host_organization_lineage": [
+                    "https://openalex.org/P4310319964",
+                    "https://openalex.org/P4310319702"
+                ],
+                "host_organization_lineage_names": [
+                    "Macmillan Publishers",
+                    "Palgrave Macmillan"
+                ],
+                "type": "journal"
+            },
+            "license": "cc-by",
+            "license_id": "https://openalex.org/licenses/cc-by",
+            "version": "publishedVersion",
+            "is_accepted": true,
+            "is_published": true
+        }
+    ],
+    "best_oa_location": {
+        "is_oa": true,
+        "landing_page_url": "https://doi.org/10.1057/s41599-025-04657-7",
+        "pdf_url": null,
+        "source": {
+            "id": "https://openalex.org/S4210206302",
+            "display_name": "Humanities and Social Sciences Communications",
+            "issn_l": "2662-9992",
+            "issn": [
+                "2662-9992"
+            ],
+            "is_oa": true,
+            "is_in_doaj": true,
+            "is_indexed_in_scopus": true,
+            "is_core": true,
+            "host_organization": "https://openalex.org/P4310319702",
+            "host_organization_name": "Palgrave Macmillan",
+            "host_organization_lineage": [
+                "https://openalex.org/P4310319964",
+                "https://openalex.org/P4310319702"
+            ],
+            "host_organization_lineage_names": [
+                "Macmillan Publishers",
+                "Palgrave Macmillan"
+            ],
+            "type": "journal"
+        },
+        "license": "cc-by",
+        "license_id": "https://openalex.org/licenses/cc-by",
+        "version": "publishedVersion",
+        "is_accepted": true,
+        "is_published": true
+    },
+    "sustainable_development_goals": [
+    ],
+    "grants": [
+    ],
+    "datasets": [
+    ],
+    "versions": [
+    ],
+    "referenced_works_count": 77,
+    "referenced_works": [
+        "https://openalex.org/W1503385231",
+        "https://openalex.org/W1892502720",
+        "https://openalex.org/W1978261734",
+        "https://openalex.org/W1985364607",
+        "https://openalex.org/W1992842034",
+        "https://openalex.org/W2002722669",
+        "https://openalex.org/W2023015865",
+        "https://openalex.org/W2041017836",
+        "https://openalex.org/W2054391580",
+        "https://openalex.org/W2107019937",
+        "https://openalex.org/W2251410821",
+        "https://openalex.org/W2277629833",
+        "https://openalex.org/W2291729564",
+        "https://openalex.org/W2532013384",
+        "https://openalex.org/W2796575871",
+        "https://openalex.org/W2799353963",
+        "https://openalex.org/W2914134294",
+        "https://openalex.org/W2970476646",
+        "https://openalex.org/W2982555884",
+        "https://openalex.org/W3020913839",
+        "https://openalex.org/W3111100569",
+        "https://openalex.org/W3127924821",
+        "https://openalex.org/W3178969281",
+        "https://openalex.org/W3185341429",
+        "https://openalex.org/W4210827551",
+        "https://openalex.org/W4221052430",
+        "https://openalex.org/W4231563569",
+        "https://openalex.org/W4232444522",
+        "https://openalex.org/W4239017649",
+        "https://openalex.org/W4240159187",
+        "https://openalex.org/W4241501560",
+        "https://openalex.org/W4245585813",
+        "https://openalex.org/W4252654026",
+        "https://openalex.org/W4254309183",
+        "https://openalex.org/W4254892326",
+        "https://openalex.org/W4281659703",
+        "https://openalex.org/W4313053235",
+        "https://openalex.org/W4317757464",
+        "https://openalex.org/W4323546023",
+        "https://openalex.org/W4366437168",
+        "https://openalex.org/W4379284826",
+        "https://openalex.org/W4384023425",
+        "https://openalex.org/W4384694269",
+        "https://openalex.org/W4385156310",
+        "https://openalex.org/W4386418045",
+        "https://openalex.org/W4386645064",
+        "https://openalex.org/W4386790659",
+        "https://openalex.org/W4386790712",
+        "https://openalex.org/W4386887838",
+        "https://openalex.org/W4387617694",
+        "https://openalex.org/W4388049829",
+        "https://openalex.org/W4389166012",
+        "https://openalex.org/W4389514989",
+        "https://openalex.org/W4389518671",
+        "https://openalex.org/W4390490761",
+        "https://openalex.org/W4390563428",
+        "https://openalex.org/W4390579355",
+        "https://openalex.org/W4390874796",
+        "https://openalex.org/W4391136507",
+        "https://openalex.org/W4392353733",
+        "https://openalex.org/W4392770614",
+        "https://openalex.org/W4393250973",
+        "https://openalex.org/W4394569913",
+        "https://openalex.org/W4395055188",
+        "https://openalex.org/W4396588665",
+        "https://openalex.org/W4396929044",
+        "https://openalex.org/W4398766485",
+        "https://openalex.org/W4399234518",
+        "https://openalex.org/W4400694993",
+        "https://openalex.org/W4400904138",
+        "https://openalex.org/W4401043427",
+        "https://openalex.org/W4401517082",
+        "https://openalex.org/W4401648069",
+        "https://openalex.org/W4402193006",
+        "https://openalex.org/W4402656226",
+        "https://openalex.org/W4404455073",
+        "https://openalex.org/W4404764849"
+    ],
+    "related_works": [
+        "https://openalex.org/W4396701345",
+        "https://openalex.org/W4396696052",
+        "https://openalex.org/W4391913857",
+        "https://openalex.org/W4391375266",
+        "https://openalex.org/W2899084033",
+        "https://openalex.org/W2748952813",
+        "https://openalex.org/W2390279801",
+        "https://openalex.org/W2376932109",
+        "https://openalex.org/W2358668433",
+        "https://openalex.org/W2001405890"
+    ],
+    "abstract_inverted_index": null,
+    "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W4408177618",
+    "counts_by_year": [
+        {
+            "year": 2025,
+            "cited_by_count": 1
+        }
+    ],
+    "updated_date": "2025-10-25T17:50:25.771602",
+    "created_date": "2025-03-07"
+}

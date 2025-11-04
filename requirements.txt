@@ -11,6 +11,7 @@ pypdf>=5.0
 pdfminer.six>=20240706
 orjson>=3.10
 openai>=1.54
+openpyxl>=3.1
 charset-normalizer>=3.3
 
 numpy>=1.26
