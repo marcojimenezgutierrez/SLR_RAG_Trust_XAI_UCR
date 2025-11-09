@@ -1,0 +1,10 @@
+Duplicate Removal Summary
+
+Source, Initial_Count, Removed_Duplicates, Final_Count
+ACM, 365, 9, 356
+IEEE, 109, 6, 103
+SCOPUS, 228, 14, 214
+SPRINGER, 135, 14, 121
+
+Final entries: 794
+Duplicates removed: 43

@@ -1,402 +1,604 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Deduplicación de archivos .bib multi-fuente (Kitchenham SLR)
-Reglas:
- - Normalización de títulos (lower, quitar acentos/puntuación)
- - Unificación de DOI (lower, quitar prefijos, espacios)
- - Duplicado por DOI exacto
- - Duplicado por similitud de título >= 0.95 + año + primer autor (fallback)
- - Prioridad de conservación: Journal > Conference > Other
- - Se preserva 'source' (fuente) como tag en keywords
+Herramientas para la preparación y deduplicación de archivos BibTeX multi-fuente.
 
-Entradas esperadas (mismo directorio):
- - SLR - JoCiCi - 2025 - ACM Library.bib
- - SLR - JoCiCi - 2025 -IEEE Xplore.bib
- - SLR - JoCiCi - 2025 - Google Scholar.bib
- - SLR - JoCiCi - 2025 - Arxiv.bib
- - SRL - JoCiCi - 2025 - SCOPUS.bib
+Características principales:
+ - CLI basado en argparse con subcomandos `annotate` y `dedup`
+ - Parseo robusto con bibtexparser y normalización extendida de títulos/DOI
+ - Etiquetado automático del origen (`source`) dentro del campo keywords
+ - Deduplicación configurable (prioridades externas, tolerancia en años, rapidfuzz)
+ - Reportes enriquecidos (XLSX/CSV + JSON) con puntajes y criterios aplicados
 
-Salidas:
- - SLR_RAG_master_clean.bib
- - SLR_RAG_duplicates_report.xlsx (o .csv si no hay engine de Excel)
- - SLR_RAG_summary.txt
+Requiere: bibtexparser, rapidfuzz (u otra implementación compatible) y, opcionalmente, pandas.
 """
 
+from __future__ import annotations
+
+import argparse
+import csv
+import html
+import json
 import os
 import re
+import sys
 import unicodedata
-from difflib import SequenceMatcher
-from collections import defaultdict, OrderedDict
-from datetime import datetime
+import copy
+import glob
+from collections import Counter, defaultdict
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 
-# pandas es opcional para XLSX; si no está, usamos CSV
+HERE = Path(__file__).resolve().parent
+
+DEFAULT_DEDUP_INPUTS = [
+    HERE / "SLR - JoCiCi - 2025 - ACM Library.bib",
+    HERE / "SLR - JoCiCi - 2025 -IEEE Xplore.bib",
+    HERE / "SLR - JoCiCi - 2025 - Google Scholar.bib",
+    HERE / "SLR - JoCiCi - 2025 - Arxiv.bib",
+    HERE / "SRL - JoCiCi - 2025 - SCOPUS.bib",
+]
+
+DEFAULT_SEARCH_GLOB = HERE.parent / "Búsqueda" / "*.bib"
+
+DEFAULT_OUT_BIB = HERE / "SLR_RAG_master_clean.bib"
+DEFAULT_OUT_DUP = HERE / "SLR_RAG_duplicates_report.xlsx"
+DEFAULT_OUT_SUM = HERE / "SLR_RAG_summary.txt"
+DEFAULT_OUT_JSON = HERE / "SLR_RAG_duplicates_report.json"
+
+DEFAULT_PRIORITY_CONFIG = {
+    "type_priority": {
+        "article": 0.0,
+        "journal": 0.0,
+        "inproceedings": 1.0,
+        "conference": 1.0
+    },
+    "source_priority": {},
+    "bonuses": {
+        "has_doi": -0.25,
+        "has_url": -0.1,
+        "extra_fields": -0.005
+    }
+}
+
 try:
-    import pandas as pd
-except Exception:
+    import pandas as pd  # type: ignore
+except Exception:  # pragma: no cover - entorno sin pandas
     pd = None
 
-HERE = os.path.abspath(os.path.dirname(__file__)) if '__file__' in globals() else os.getcwd()
+try:
+    import bibtexparser  # type: ignore
+    from bibtexparser.bparser import BibTexParser  # type: ignore
+    from bibtexparser.bwriter import BibTexWriter  # type: ignore
+    from bibtexparser.bibdatabase import BibDatabase  # type: ignore
+except ImportError as exc:  # pragma: no cover
+    raise SystemExit("Se requiere bibtexparser. Instálalo vía 'pip install bibtexparser'.") from exc
 
-INPUT_FILES = OrderedDict({
-    "ACM": os.path.join(HERE, "SLR - JoCiCi - 2025 - ACM Library.bib"),
-    "IEEE": os.path.join(HERE, "SLR - JoCiCi - 2025 -IEEE Xplore.bib"),
-    "Google Scholar": os.path.join(HERE, "SLR - JoCiCi - 2025 - Google Scholar.bib"),
-    "Arxiv": os.path.join(HERE, "SLR - JoCiCi - 2025 - Arxiv.bib"),
-    "Scopus": os.path.join(HERE, "SRL - JoCiCi - 2025 - SCOPUS.bib"),
-})
+try:
+    from rapidfuzz import fuzz  # type: ignore
+except ImportError:  # pragma: no cover - fallback
+    from difflib import SequenceMatcher
 
-OUT_BIB = os.path.join(HERE, "SLR_RAG_master_clean.bib")
-OUT_DUP = os.path.join(HERE, "SLR_RAG_duplicates_report.xlsx")
-OUT_SUM = os.path.join(HERE, "SLR_RAG_summary.txt")
+    def fuzz_token_ratio(a: str, b: str) -> float:
+        return SequenceMatcher(None, a, b).ratio() * 100.0
+else:
+    def fuzz_token_ratio(a: str, b: str) -> float:
+        return float(fuzz.token_set_ratio(a, b))
 
-# ---------------------------
-# Utilidades
-# ---------------------------
 
-def strip_accents(s: str) -> str:
-    return ''.join(c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn')
+@dataclass
+class PriorityConfig:
+    type_priority: Dict[str, float] = field(default_factory=lambda: DEFAULT_PRIORITY_CONFIG["type_priority"].copy())
+    source_priority: Dict[str, float] = field(default_factory=lambda: DEFAULT_PRIORITY_CONFIG["source_priority"].copy())
+    bonuses: Dict[str, float] = field(default_factory=lambda: DEFAULT_PRIORITY_CONFIG["bonuses"].copy())
 
-def normalize_title(t: str) -> str:
-    if not t:
-        return ''
-    t = t.strip()
-    t = strip_accents(t)
-    t = t.lower()
-    # quitar puntuación y espacios repetidos
-    t = re.sub(r'[^\w\s]', ' ', t)
-    t = re.sub(r'\s+', ' ', t).strip()
-    return t
+    @classmethod
+    def from_path(cls, path: Optional[Path]) -> "PriorityConfig":
+        if not path:
+            return cls()
+        if not path.exists():
+            raise FileNotFoundError(f"No se encontró el archivo de configuración de prioridades: {path}")
+        loaded = json.loads(path.read_text(encoding="utf-8"))
+        cfg = copy.deepcopy(DEFAULT_PRIORITY_CONFIG)
+        for key, value in loaded.items():
+            if key in cfg and isinstance(cfg[key], dict) and isinstance(value, dict):
+                cfg[key].update(value)
+            else:
+                cfg[key] = value
+        return cls(
+            type_priority=cfg.get("type_priority", {}).copy(),
+            source_priority=cfg.get("source_priority", {}).copy(),
+            bonuses=cfg.get("bonuses", {}).copy(),
+        )
+
+
+@dataclass
+class Entry:
+    source: str
+    source_path: Path
+    item_type: str
+    cite_key: str
+    fields: Dict[str, str]
+    norm_title: str = ""
+    norm_doi: str = ""
+    norm_first_author: str = ""
+    norm_venue: str = ""
+    year_int: Optional[int] = None
+    priority: float = 0.0
+
+    def ensure_source_keyword(self):
+        tag = f"source: {self.source}"
+        value = self.fields.get("keywords", "")
+        tokens = [t.strip() for t in re.split(r"[;,]", value) if t.strip()]
+        if any(t.lower() == tag.lower() for t in tokens):
+            self.fields["keywords"] = ", ".join(tokens) if tokens else tag
+            return
+        tokens.append(tag)
+        self.fields["keywords"] = ", ".join(tokens)
+
+
+def strip_accents(text: str) -> str:
+    return "".join(
+        c for c in unicodedata.normalize("NFKD", text) if unicodedata.category(c) != "Mn"
+    )
+
+
+def normalize_whitespace(text: str) -> str:
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def normalize_title(text: str) -> str:
+    if not text:
+        return ""
+    text = html.unescape(text)
+    text = text.replace("&", " and ")
+    text = strip_accents(text)
+    text = text.lower()
+    text = re.sub(r"[^\w\s]", " ", text, flags=re.UNICODE)
+    return normalize_whitespace(text)
+
 
 def normalize_doi(doi: str) -> str:
     if not doi:
-        return ''
-    d = doi.strip().lower()
-    d = d.replace('\\', '')
-    # quitar prefijos comunes
-    d = re.sub(r'^(https?://(dx\.)?doi\.org/)', '', d)
-    d = d.replace('doi:', '').strip()
-    return d
+        return ""
+    doi = html.unescape(doi)
+    doi = doi.strip().lower()
+    doi = doi.replace("\\", "")
+    doi = re.sub(r"https?://(dx\.)?doi\.org/", "", doi)
+    doi = doi.replace("doi:", "")
+    doi = doi.split("?")[0].split("#")[0]
+    doi = doi.strip().strip(".").strip("/")
+    return doi
 
-def first_author(authors_field: str) -> str:
-    if not authors_field:
-        return ''
-    # separar por 'and' o comas
-    parts = re.split(r'\s+and\s+|,\s*', authors_field, flags=re.IGNORECASE)
-    return parts[0].strip() if parts else ''
 
-def item_priority(item_type: str, note_type: str) -> int:
-    """
-    Menor número = mayor prioridad
-    Journal > Conference > Other
-    """
-    t = (item_type or '').lower()
-    n = (note_type or '').lower()
-    if 'article' in t and 'journal' in n:
-        return 0
-    if 'article' in t and 'journal' in t:  # algunos .bib ponen 'article' a secas
-        return 0
-    if 'inproceedings' in t or 'conference' in t or 'proceedings' in n or 'conference' in n:
-        return 1
-    return 2
+def normalize_person(value: str) -> str:
+    if not value:
+        return ""
+    parts = re.split(r"\s+and\s+|,\s*", value, flags=re.IGNORECASE)
+    first = parts[0] if parts else ""
+    first = re.sub(r"[^A-Za-zÀ-ÿ\s]", " ", first)
+    return normalize_title(first)
 
-def parse_bibtex_minimal(path: str, source: str):
-    """
-    Parser mínimo de BibTeX:
-    - Separa entradas por '@'
-    - Identifica el bloque por llaves balanceadas
-    - Extrae campos 'title', 'author', 'year', 'doi', 'note', 'keywords'
-    - Guarda item_type (@article, @inproceedings, etc.) y cite_key
-    """
-    with open(path, 'r', encoding='utf-8', errors='ignore') as f:
-        txt = f.read()
 
-    entries = []
-    i = 0
-    n = len(txt)
-    while i < n:
-        if txt[i] != '@':
-            i += 1
-            continue
-        # tipo
-        j = i + 1
-        while j < n and txt[j].isalpha():
-            j += 1
-        item_type = txt[i+1:j].strip()
-        # salto hasta '{'
-        while j < n and txt[j] != '{':
-            j += 1
-        if j >= n:
-            break
-        j += 1  # después de '{'
-        start = j
-        brace = 1
-        while j < n and brace > 0:
-            if txt[j] == '{':
-                brace += 1
-            elif txt[j] == '}':
-                brace -= 1
-            j += 1
-        block = txt[start:j-1]
+def normalize_venue(entry_fields: Dict[str, str]) -> str:
+    venue = entry_fields.get("journal") or entry_fields.get("booktitle") or ""
+    return normalize_title(venue)
 
-        # cite_key es lo primero hasta la coma
-        if ',' in block:
-            cite_key, rest = block.split(',', 1)
-            cite_key = cite_key.strip()
-        else:
-            cite_key, rest = block.strip(), ''
 
-        fields = {}
-        for m in re.finditer(r'(\w+)\s*=\s*(\{.*?\}|\".*?\"|[^,]+)', rest, flags=re.S):
-            k = m.group(1).strip().lower()
-            v = m.group(2).strip().strip(',').strip()
-            # quitar llaves/quotes
-            if v.startswith('{') and v.endswith('}'):
-                v = v[1:-1]
-            elif v.startswith('"') and v.endswith('"'):
-                v = v[1:-1]
-            fields[k] = v
+def extract_year(value: str) -> Optional[int]:
+    if not value:
+        return None
+    match = re.search(r"(19|20)\d{2}", value)
+    return int(match.group(0)) if match else None
 
-        title = fields.get('title', '')
-        author = fields.get('author', '')
-        year = fields.get('year', '')
-        doi = fields.get('doi', '')
-        note = fields.get('note', '')
-        kws = fields.get('keywords', '')
 
-        entries.append({
-            'source': source,
-            'item_type': item_type,
-            'cite_key': cite_key,
-            'fields': fields,
-            'title': title,
-            'year': year,
-            'author': author,
-            'first_author': first_author(author),
-            'doi': doi,
-            'note': note,
-            'keywords': kws
-        })
-        i = j
+def infer_source_from_name(path: Path, explicit: Optional[str] = None, source_map: Optional[Dict[str, str]] = None) -> str:
+    if explicit:
+        return explicit
+    source_map = source_map or {}
+    name = path.stem
+    tokens = re.split(r"[_\-]", name)
+    # prefer explicit mappings
+    for token in tokens + [name]:
+        clean = token.strip().upper()
+        if clean in source_map:
+            return source_map[clean]
+    # heurística: prefijo antes del primer guion bajo (caso Búsqueda)
+    prefix = name.split("_", 1)[0].strip()
+    if prefix and prefix.isalpha():
+        return source_map.get(prefix.upper(), prefix)
+    # fallback: último token mayúscula (caso SLR - ... - ACM Library)
+    dash_tokens = [t.strip() for t in name.split("-") if t.strip()]
+    for token in reversed(dash_tokens):
+        if token.isupper():
+            return source_map.get(token, token)
+        if token.lower() in {"acm library", "ieee xplore", "google scholar", "arxiv", "scopus"}:
+            return source_map.get(token.upper(), token.title())
+    return source_map.get("DEFAULT", "Unknown")
+
+
+def build_bibtex_parser() -> BibTexParser:
+    parser = BibTexParser(common_strings=True)
+    parser.ignore_nonstandard_types = False
+    parser.homogenize_fields = True
+    return parser
+
+
+def load_bib_entries(
+    path: Path,
+    source_label: Optional[str],
+    source_map: Optional[Dict[str, str]],
+) -> List[Entry]:
+    parser = build_bibtex_parser()
+    with path.open("r", encoding="utf-8", errors="ignore") as handle:
+        database = bibtexparser.load(handle, parser=parser)
+
+    entries: List[Entry] = []
+    inferred_source = infer_source_from_name(path, explicit=source_label, source_map=source_map)
+    for raw in database.entries:
+        fields = {k: v for k, v in raw.items() if k not in {"ENTRYTYPE", "ID"}}
+        entry = Entry(
+            source=inferred_source,
+            source_path=path,
+            item_type=raw.get("ENTRYTYPE", "article"),
+            cite_key=raw.get("ID", ""),
+            fields=fields,
+        )
+        entries.append(entry)
     return entries
 
-def write_bib(entries, path):
-    with open(path, 'w', encoding='utf-8') as f:
-        for e in entries:
-            item_type = e.get('item_type') or 'article'
-            cite = e.get('cite_key') or f"key_{abs(hash(e['title']))}"
-            fields = e.get('fields', {})
-            # garantizar keyword de fuente
-            kws = fields.get('keywords', '')
-            tag = f"source: {e.get('source','Unknown')}"
-            if kws:
-                # evitar duplicar tag
-                if tag.lower() not in kws.lower():
-                    kws = kws + ', ' + tag
-            else:
-                kws = tag
-            fields['keywords'] = kws
 
-            f.write(f"@{item_type}{{{cite},\n")
-            # escribir campos con formato ordenado
-            ordered = ['title','author','year','doi','url','booktitle','journal','volume','number','pages','publisher','note','keywords']
-            done = set()
-            for k in ordered:
-                if k in fields and fields[k]:
-                    f.write(f"  {k} = {{{fields[k]}}},\n")
-                    done.add(k)
-            # resto
-            for k,v in fields.items():
-                if k in done or not v:
-                    continue
-                f.write(f"  {k} = {{{v}}},\n")
-            f.write("}\n\n")
+def prepare_entries(entries: Iterable[Entry], priority_cfg: PriorityConfig):
+    for entry in entries:
+        entry.norm_title = normalize_title(entry.fields.get("title", ""))
+        entry.norm_doi = normalize_doi(entry.fields.get("doi", ""))
+        entry.norm_first_author = normalize_person(entry.fields.get("author", ""))
+        entry.norm_venue = normalize_venue(entry.fields)
+        entry.year_int = extract_year(entry.fields.get("year", ""))
+        entry.priority = compute_priority(entry, priority_cfg)
+        entry.ensure_source_keyword()
 
-def ratio(a, b):
-    return SequenceMatcher(None, a, b).ratio()
 
-# ---------------------------
-# Carga y normalización
-# ---------------------------
+def compute_priority(entry: Entry, cfg: PriorityConfig) -> float:
+    item_type = entry.item_type.lower()
+    base = cfg.type_priority.get(item_type, 2.0)
+    # intentar detectar "journal" en note/booktitle para mejorar heurística
+    note = entry.fields.get("note", "").lower()
+    booktitle = entry.fields.get("booktitle", "").lower()
+    if "journal" in note or "journal" in booktitle:
+        base = min(base, cfg.type_priority.get("journal", base))
+    base += cfg.source_priority.get(entry.source, 0.0)
+    if entry.norm_doi:
+        base += cfg.bonuses.get("has_doi", 0.0)
+    if entry.fields.get("url"):
+        base += cfg.bonuses.get("has_url", 0.0)
+    base += cfg.bonuses.get("extra_fields", 0.0) * len(entry.fields)
+    return base
 
-all_entries = []
-counters = {}
-for src, fpath in INPUT_FILES.items():
-    if not os.path.exists(fpath):
-        print(f"[WARN] No encontrado: {fpath}")
-        counters[src] = 0
-        continue
-    entries = parse_bibtex_minimal(fpath, src)
-    counters[src] = len(entries)
-    all_entries.extend(entries)
-print("Counts by source:", counters)
-print("Total entries loaded:", len(all_entries))
 
-# Normalizar campos derivados
-for e in all_entries:
-    e['norm_title'] = normalize_title(e.get('title'))
-    e['norm_doi'] = normalize_doi(e.get('doi'))
-    yp = e.get('year')
-    try:
-        e['year_int'] = int(re.findall(r'\d{4}', yp)[0]) if yp else None
-    except Exception:
-        e['year_int'] = None
-    e['priority'] = item_priority(e.get('item_type'), e.get('note'))
+def bucket_signature(entry: Entry) -> Tuple[str, str]:
+    tokens = entry.norm_title.split()
+    prefix = "".join(tokens[:2])[:8]
+    return (prefix or entry.norm_title[:2], str(entry.year_int or "unknown"))
 
-# ---------------------------
-# Deduplicación por DOI
-# ---------------------------
 
-kept = []
-removed_rows = []
+def titles_match(
+    e1: Entry,
+    e2: Entry,
+    threshold: float,
+    year_tolerance: int,
+    allow_author_mismatch: bool,
+) -> Tuple[bool, float, str]:
+    if e1.year_int and e2.year_int:
+        if abs(e1.year_int - e2.year_int) > year_tolerance:
+            return False, 0.0, "year_mismatch"
+    score = fuzz_token_ratio(e1.norm_title, e2.norm_title) / 100.0
+    bonus = 0.0
+    if e1.norm_venue and e1.norm_venue == e2.norm_venue:
+        bonus += 0.03
+    if e1.norm_first_author and e1.norm_first_author == e2.norm_first_author:
+        bonus += 0.02
+    effective_score = min(score + bonus, 1.0)
+    if effective_score < threshold:
+        return False, effective_score, "title_threshold"
+    if not allow_author_mismatch and e1.norm_first_author and e2.norm_first_author:
+        if e1.norm_first_author != e2.norm_first_author:
+            return False, effective_score, "author_mismatch"
+    return True, effective_score, "duplicate_by_title"
 
-by_doi = defaultdict(list)
-no_doi = []
-for e in all_entries:
-    if e['norm_doi']:
-        by_doi[e['norm_doi']].append(e)
-    else:
-        no_doi.append(e)
 
-def pick_best(group):
-    # elige por menor prioridad; si empata, el que tenga más campos
-    group_sorted = sorted(group, key=lambda x: (x['priority'], -len(x['fields'])))
-    return group_sorted[0], [g for g in group_sorted[1:]]
+def pick_best_entry(group: List[Entry]) -> Tuple[Entry, List[Entry]]:
+    sorted_group = sorted(group, key=lambda e: (e.priority, -len(e.fields)))
+    return sorted_group[0], sorted_group[1:]
 
-# grupos por DOI
-for doi, group in by_doi.items():
-    best, rest = pick_best(group)
-    kept.append(best)
-    for r in rest:
-        removed_rows.append({
-            'removed_source': r['source'],
-            'removed_cite_key': r['cite_key'],
-            'removed_title': r['title'],
-            'removed_year': r['year'],
-            'removed_doi': r['doi'],
-            'kept_source': best['source'],
-            'kept_cite_key': best['cite_key'],
-            'kept_title': best['title'],
-            'kept_year': best['year'],
-            'kept_doi': best['doi'],
-            'reason': 'duplicate_by_doi'
-        })
 
-# ---------------------------
-# Deduplicación por título (~=) + año + primer autor
-# ---------------------------
-
-# index por (norm_title, year_int, first_author) aproximado
-# usaremos un bucket por primera letra para reducir comparaciones
-buckets = defaultdict(list)
-for e in no_doi:
-    key = (e['norm_title'][:1], e.get('year_int'))
-    buckets[key].append(e)
-
-def similar(e1, e2, thr=0.95):
-    # match año (si ambos tienen), y primer autor si existe
-    if e1.get('year_int') and e2.get('year_int'):
-        if e1['year_int'] != e2['year_int']:
-            return False
-    # similitud de título
-    if ratio(e1['norm_title'], e2['norm_title']) < thr:
-        return False
-    # si ambos tienen primer autor, preferimos coincidir
-    a1 = normalize_title(e1.get('first_author') or '')
-    a2 = normalize_title(e2.get('first_author') or '')
-    if a1 and a2 and a1 != a2:
-        # si autores difieren y títulos muy similares, aún podría ser distinto; mantenemos conservador
-        return False
-    return True
-
-visited = set()
-for bkey, items in buckets.items():
-    # greedy grouping
-    for i, e in enumerate(items):
-        if id(e) in visited:
-            continue
-        group = [e]
-        visited.add(id(e))
-        for j in range(i+1, len(items)):
-            x = items[j]
-            if id(x) in visited:
-                continue
-            if similar(e, x, thr=0.95):
-                group.append(x)
-                visited.add(id(x))
-        if len(group) == 1:
-            kept.append(e)
+def deduplicate_entries(
+    entries: List[Entry],
+    similarity_threshold: float,
+    year_tolerance: int,
+    allow_author_mismatch: bool,
+) -> Tuple[List[Entry], List[Dict[str, object]]]:
+    kept: List[Entry] = []
+    removed_rows: List[Dict[str, object]] = []
+    by_doi: Dict[str, List[Entry]] = defaultdict(list)
+    no_doi: List[Entry] = []
+    for entry in entries:
+        if entry.norm_doi:
+            by_doi[entry.norm_doi].append(entry)
         else:
-            best, rest = pick_best(group)
-            kept.append(best)
-            for r in rest:
-                removed_rows.append({
-                    'removed_source': r['source'],
-                    'removed_cite_key': r['cite_key'],
-                    'removed_title': r['title'],
-                    'removed_year': r['year'],
-                    'removed_doi': r['doi'],
-                    'kept_source': best['source'],
-                    'kept_cite_key': best['cite_key'],
-                    'kept_title': best['title'],
-                    'kept_year': best['year'],
-                    'kept_doi': best['doi'],
-                    'reason': 'duplicate_by_title'
-                })
+            no_doi.append(entry)
 
-# ---------------------------
-# Salidas
-# ---------------------------
+    for doi, group in by_doi.items():
+        best, rest = pick_best_entry(group)
+        kept.append(best)
+        for entry in rest:
+            removed_rows.append(build_removed_row(entry, best, "duplicate_by_doi", 1.0, doi, None))
 
-# Escribir .bib limpio
-write_bib(kept, OUT_BIB)
+    buckets: Dict[Tuple[str, str], List[Entry]] = defaultdict(list)
+    for entry in no_doi:
+        buckets[bucket_signature(entry)].append(entry)
 
-# Reporte de duplicados
-if pd is not None:
-    df = pd.DataFrame(removed_rows, columns=[
-        'removed_source', 'removed_cite_key', 'removed_title', 'removed_year', 'removed_doi',
-        'kept_source', 'kept_cite_key', 'kept_title', 'kept_year', 'kept_doi', 'reason'
-    ])
-    try:
-        df.to_excel(OUT_DUP, index=False)
-        dup_path = OUT_DUP
-    except Exception:
-        # Fallback a CSV si no hay engine para Excel
-        dup_path = OUT_DUP.replace('.xlsx', '.csv')
-        df.to_csv(dup_path, index=False, encoding='utf-8')
-else:
-    # Sin pandas: escribir CSV manual
-    dup_path = OUT_DUP.replace('.xlsx', '.csv')
-    import csv
-    with open(dup_path, 'w', newline='', encoding='utf-8') as f:
-        w = csv.DictWriter(f, fieldnames=[
-            'removed_source', 'removed_cite_key', 'removed_title', 'removed_year', 'removed_doi',
-            'kept_source', 'kept_cite_key', 'kept_title', 'kept_year', 'kept_doi', 'reason'
-        ])
-        w.writeheader()
-        for row in removed_rows:
-            w.writerow(row)
+    visited = set()
+    for items in buckets.values():
+        for entry in items:
+            if id(entry) in visited:
+                continue
+            group = [entry]
+            visited.add(id(entry))
+            pair_meta: Dict[int, Tuple[Entry, float, str]] = {}
+            for candidate in items:
+                if id(candidate) in visited:
+                    continue
+                match, score, reason = titles_match(entry, candidate, similarity_threshold, year_tolerance, allow_author_mismatch)
+                if match:
+                    group.append(candidate)
+                    pair_meta[id(candidate)] = (entry, score, reason)
+                    visited.add(id(candidate))
+            if len(group) == 1:
+                kept.append(entry)
+            else:
+                best, rest = pick_best_entry(group)
+                kept.append(best)
+                for candidate in rest:
+                    origin, score, reason = pair_meta.get(id(candidate), (best, similarity_threshold, "duplicate_by_title"))
+                    if origin is not best:
+                        match, new_score, new_reason = titles_match(best, candidate, similarity_threshold, year_tolerance, allow_author_mismatch)
+                        if match:
+                            score, reason = new_score, new_reason
+                    removed_rows.append(build_removed_row(candidate, best, reason, score, candidate.norm_title, None))
 
-# Resumen por fuente
-initial_counts = {src: 0 for src in INPUT_FILES.keys()}
-for src, cnt in counters.items():
-    initial_counts[src] = cnt
+    return kept, removed_rows
 
-final_counts = {src: 0 for src in INPUT_FILES.keys()}
-for e in kept:
-    final_counts[e['source']] += 1
 
-removed_counts = {src: initial_counts.get(src,0) - final_counts.get(src,0) for src in initial_counts}
+def build_removed_row(entry: Entry, kept: Entry, reason: str, score: float, match_value: Optional[str], aux_reason: Optional[str]) -> Dict[str, object]:
+    return {
+        "removed_source": entry.source,
+        "removed_path": str(entry.source_path),
+        "removed_cite_key": entry.cite_key,
+        "removed_title": entry.fields.get("title", ""),
+        "removed_year": entry.fields.get("year", ""),
+        "removed_doi": entry.fields.get("doi", ""),
+        "removed_priority": entry.priority,
+        "kept_source": kept.source,
+        "kept_path": str(kept.source_path),
+        "kept_cite_key": kept.cite_key,
+        "kept_title": kept.fields.get("title", ""),
+        "kept_year": kept.fields.get("year", ""),
+        "kept_doi": kept.fields.get("doi", ""),
+        "kept_priority": kept.priority,
+        "reason": aux_reason or reason,
+        "match_value": match_value or kept.norm_doi,
+        "match_score": round(score, 3),
+    }
 
-with open(OUT_SUM, 'w', encoding='utf-8') as f:
-    f.write("Duplicate Removal Summary:\n\n")
-    f.write("Source, Initial_Count, Removed_Duplicates, Final_Count\n\n")
-    for src in INPUT_FILES.keys():
-        f.write(f"{src}, {initial_counts.get(src,0)}, {removed_counts.get(src,0)}, {final_counts.get(src,0)}\n")
 
-print(f"Final entries count after removing duplicates: {len(kept)}")
-print(f"Duplicates found: {len(removed_rows)}")
-print(f"Clean bib saved to {OUT_BIB}")
-print(f"Duplicates report saved to {dup_path}")
-print(f"Summary saved to {OUT_SUM}")
+def write_bib(entries: List[Entry], destination: Path):
+    writer = BibTexWriter()
+    writer.indent = "  "
+    writer.order_entries_by = ("ID",)
+    writer.align_values = True
+    database = BibDatabase()
+    serialized = []
+    for entry in entries:
+        record = {
+            "ENTRYTYPE": entry.item_type,
+            "ID": entry.cite_key or f"key_{abs(hash(entry.norm_title))}",
+        }
+        record.update(entry.fields)
+        serialized.append(record)
+    database.entries = serialized
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with destination.open("w", encoding="utf-8") as handle:
+        handle.write(writer.write(database))
 
+
+def write_duplicates_report(rows: List[Dict[str, object]], destination: Path, json_path: Path):
+    json_path.parent.mkdir(parents=True, exist_ok=True)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with json_path.open("w", encoding="utf-8") as handle:
+        json.dump(rows, handle, indent=2, ensure_ascii=False)
+
+    if not rows:
+        destination.write_text("No duplicates detected.", encoding="utf-8")
+        return
+
+    if pd is not None:
+        df = pd.DataFrame(rows)
+        try:
+            df.to_excel(destination, index=False)
+            return
+        except Exception:
+            pass
+
+    csv_path = destination.with_suffix(".csv")
+    with csv_path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=rows[0].keys())
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def write_summary(kept: List[Entry], removed_rows: List[Dict[str, object]], destination: Path, initial_counts: Counter):
+    source_counts = Counter(entry.source for entry in kept)
+    removed_counts = Counter(row["removed_source"] for row in removed_rows)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with destination.open("w", encoding="utf-8") as handle:
+        handle.write("Duplicate Removal Summary\n\n")
+        handle.write("Source, Initial_Count, Removed_Duplicates, Final_Count\n")
+        for source in sorted(set(initial_counts.keys()) | set(source_counts.keys()) | set(removed_counts.keys())):
+            handle.write(
+                f"{source}, "
+                f"{initial_counts.get(source,0)}, "
+                f"{removed_counts.get(source,0)}, "
+                f"{source_counts.get(source,0)}\n"
+            )
+        handle.write(f"\nFinal entries: {len(kept)}\nDuplicates removed: {len(removed_rows)}\n")
+
+
+def resolve_input_paths(patterns: Optional[Sequence[str]], default_candidates: Sequence[Path]) -> List[Path]:
+    resolved: List[Path] = []
+    if patterns:
+        for pattern in patterns:
+            pattern_str = str(pattern)
+            path = Path(pattern_str)
+            if any(char in pattern_str for char in "*?[]"):
+                resolved.extend(sorted(Path(p) for p in glob.glob(pattern_str)))
+            elif path.exists():
+                resolved.append(path)
+            else:
+                raise FileNotFoundError(f"No se encontró el archivo {pattern}")
+    else:
+        resolved = [Path(p) for p in default_candidates if Path(p).exists()]
+    if not resolved:
+        raise FileNotFoundError("No se encontraron archivos de entrada.")
+    return resolved
+
+
+def annotate_file(path: Path, source_map: Optional[Dict[str, str]], dry_run: bool = False) -> Dict[str, int]:
+    parser = build_bibtex_parser()
+    with path.open("r", encoding="utf-8", errors="ignore") as handle:
+        database = bibtexparser.load(handle, parser=parser)
+
+    modified = 0
+    source_label = infer_source_from_name(path, source_map=source_map)
+    for entry in database.entries:
+        keywords = entry.get("keywords", "")
+        tag = f"source: {source_label}"
+        tokens = [t.strip() for t in re.split(r"[;,]", keywords) if t.strip()]
+        if any(t.lower() == tag.lower() for t in tokens):
+            continue
+        tokens.append(tag)
+        entry["keywords"] = ", ".join(tokens)
+        modified += 1
+
+    if not dry_run and modified:
+        writer = BibTexWriter()
+        writer.indent = "  "
+        writer.order_entries_by = ("ID",)
+        writer.align_values = True
+        with path.open("w", encoding="utf-8") as handle:
+            handle.write(writer.write(database))
+
+    return {"updated": modified}
+
+
+def run_annotation(args: argparse.Namespace):
+    source_map = load_source_map(args.source_map)
+    inputs = resolve_annotation_inputs(args.inputs)
+    totals = Counter()
+    for path in inputs:
+        stats = annotate_file(path, source_map=source_map, dry_run=args.dry_run)
+        totals.update(stats)
+        print(f"[ANNOTATE] {path}: {stats['updated']} registros etiquetados.")
+    print(f"\nArchivos procesados: {len(inputs)} | Registros etiquetados: {totals['updated']}")
+    if args.dry_run:
+        print("Ejecutado en modo --dry-run (no se escribieron cambios).")
+
+
+def resolve_annotation_inputs(patterns: Optional[Sequence[str]]) -> List[Path]:
+    if patterns:
+        inputs: List[Path] = []
+        for pattern in patterns:
+            inputs.extend(sorted(Path(p) for p in glob.glob(pattern)))
+    else:
+        inputs = sorted(Path(p) for p in glob.glob(str(DEFAULT_SEARCH_GLOB)))
+    if not inputs:
+        raise FileNotFoundError("No se hallaron archivos .bib para anotar.")
+    return inputs
+
+
+def load_source_map(path: Optional[str]) -> Optional[Dict[str, str]]:
+    if not path:
+        return None
+    return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def run_dedup(args: argparse.Namespace):
+    source_map = load_source_map(args.source_map)
+    inputs = resolve_input_paths(args.inputs, DEFAULT_DEDUP_INPUTS)
+    priority_cfg = PriorityConfig.from_path(Path(args.priority_config) if args.priority_config else None)
+
+    all_entries: List[Entry] = []
+    counters: Dict[str, int] = {}
+    for path in inputs:
+        entries = load_bib_entries(path, args.source_label, source_map)
+        counters[str(path)] = len(entries)
+        all_entries.extend(entries)
+        preview_source = entries[0].source if entries else infer_source_from_name(path, args.source_label, source_map)
+        print(f"[LOAD] {path} -> {len(entries)} registros (source: {preview_source})")
+
+    prepare_entries(all_entries, priority_cfg)
+    initial_counts = Counter(entry.source for entry in all_entries)
+    kept, removed_rows = deduplicate_entries(
+        all_entries,
+        similarity_threshold=args.similarity_threshold,
+        year_tolerance=args.year_tolerance,
+        allow_author_mismatch=args.allow_author_mismatch,
+    )
+
+    write_bib(kept, Path(args.output_bib))
+    write_duplicates_report(removed_rows, Path(args.duplicates_report), Path(args.duplicates_json))
+    write_summary(kept, removed_rows, Path(args.summary_path), initial_counts)
+
+    print(f"\nFinal entries count: {len(kept)}")
+    print(f"Duplicates removed: {len(removed_rows)}")
+    print(f"Clean bib saved to {args.output_bib}")
+    print(f"Duplicates report saved to {args.duplicates_report} / {args.duplicates_json}")
+    print(f"Summary saved to {args.summary_path}")
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Herramientas de deduplicación para BibTeX multi-fuente.")
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    annotate = subparsers.add_parser("annotate", help="Etiqueta cada entrada con el metadato source en keywords.")
+    annotate.add_argument("--inputs", nargs="+", help="Archivos o patrones glob (por defecto Búsqueda/*.bib).")
+    annotate.add_argument("--source-map", help="Ruta a JSON con mapeo de tokens a nombres de fuente.")
+    annotate.add_argument("--dry-run", action="store_true", help="Simula los cambios sin escribir archivos.")
+    annotate.set_defaults(func=run_annotation)
+
+    dedup = subparsers.add_parser("dedup", help="Ejecuta la deduplicación con parámetros configurables.")
+    dedup.add_argument("--inputs", nargs="+", help="Archivos o patrones glob. Si se omite usa entradas por defecto.")
+    dedup.add_argument("--source-label", help="Sobrescribe la etiqueta de fuente para todos los archivos.")
+    dedup.add_argument("--source-map", help="Ruta a JSON con mapeo de tokens a nombres de fuente.")
+    dedup.add_argument("--output-bib", default=str(DEFAULT_OUT_BIB), help="Archivo .bib limpio resultante.")
+    dedup.add_argument("--duplicates-report", default=str(DEFAULT_OUT_DUP), help="Reporte tabular de duplicados (XLSX/CSV).")
+    dedup.add_argument("--duplicates-json", default=str(DEFAULT_OUT_JSON), help="Reporte JSON con detalles de duplicados.")
+    dedup.add_argument("--summary-path", default=str(DEFAULT_OUT_SUM), help="Resumen de conteos por fuente.")
+    dedup.add_argument("--priority-config", help="Archivo JSON con configuración de prioridades.")
+    dedup.add_argument("--similarity-threshold", type=float, default=0.95, help="Umbral de similitud de título (0-1).")
+    dedup.add_argument("--year-tolerance", type=int, default=0, help="Tolerancia permitida en años (ej. 1 para ±1).")
+    dedup.add_argument("--allow-author-mismatch", action="store_true", help="Permite combinar duplicados aunque el primer autor difiera.")
+    dedup.set_defaults(func=run_dedup)
+
+    return parser
+
+
+def main(argv: Optional[Sequence[str]] = None):
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    args.func(args)
+
+
+if __name__ == "__main__":
+    main()

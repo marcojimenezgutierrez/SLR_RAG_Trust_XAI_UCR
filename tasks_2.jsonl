@@ -1,0 +1,57 @@
+{
+  "title": "Mejoras pendientes para dedup.py",
+  "context": "Agrupar y ejecutar después las mejoras detectadas en el análisis del script de deduplicación.",
+  "related_files": [
+    "Deduplicación/dedup.py"
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "summary": "Generalizar rutas de entrada y salida",
+      "details": "Agregar CLI con argparse (lista de .bib o patrón) y flags para los archivos de salida, validando que existan antes de ejecutar.",
+      "status": "completed"
+    },
+    {
+      "id": "T2",
+      "summary": "Reemplazar parser manual por uno robusto",
+      "details": "Integrar bibtexparser (o mejorar el actual) para soportar llaves anidadas, macros y valores multilínea sin perder campos.",
+      "status": "completed"
+    },
+    {
+      "id": "T3",
+      "summary": "Refinar prioridad de entradas",
+      "details": "Permitir configuración externa del score por fuente/tipo y considerar presencia de DOI/URL y campos clave antes de decidir qué versión conservar.",
+      "status": "completed"
+    },
+    {
+      "id": "T4",
+      "summary": "Mejorar bucketing y similitud por título",
+      "details": "Usar hashing por n-gramas o varias primeras letras, permitir tolerancia de año ±1 y combinar autor/aparición en journal/booktitle para reducir falsos negativos.",
+      "status": "completed"
+    },
+    {
+      "id": "T5",
+      "summary": "Ampliar normalización de títulos y DOI",
+      "details": "Respetar caracteres unicode, limpiar entidades HTML, homogeneizar conectores y eliminar sufijos/prefixes adicionales en DOIs.",
+      "status": "completed"
+    },
+    {
+      "id": "T6",
+      "summary": "Enriquecer reportes de duplicados",
+      "details": "Añadir columnas de criterios/puntaje, generar salida JSON además del XLSX/CSV y registrar advertencias cuando no se pueda decidir automáticamente.",
+      "status": "completed"
+    },
+    {
+      "id": "T7",
+      "summary": "Detectar base de datos por archivo de búsqueda",
+      "details": "Escanear Búsqueda/*.bib, inferir la fuente desde el prefijo del nombre (ACM, IEEE, SCOPUS, etc.) y construir un mapa archivo->source para reutilizarlo en el etiquetado.",
+      "status": "completed"
+    },
+    {
+      "id": "T8",
+      "summary": "Insertar metadato de origen en cada registro BibTeX",
+      "details": "Parsear cada .bib de Búsqueda, actualizar/crear el campo keywords añadiendo el tag 'source: <BASE>' sin duplicarlo y conservando keywords existentes para mejorar la trazabilidad previa a la deduplicación.",
+      "status": "completed"
+    }
+  ]
+}
