@@ -20,7 +20,7 @@ Entradas:
 Salidas (se generan en la carpeta indicada por ``--outdir``):
   - ``screening_results.tsv``: listado completo de entradas con sus puntuaciones, etiquetas y decisiones.
   - ``screening_summary.txt``: resumen estadístico de los resultados.
-  - ``screening_top20.tsv``: las 20 entradas más relevantes según la heurística (score y año).
+  - ``screening_top50.tsv``: las 50 entradas más relevantes según la heurística (score y año).
   - ``screening_ambiguous.tsv``: entradas que mencionan RAG pero no activan ninguna RQ (decisión ``Maybe``).
 
 Algoritmo general:
@@ -34,7 +34,8 @@ Algoritmo general:
   4. Finalmente se generan los archivos de salida ordenando por puntuación y año, y se reportan estadísticas de cobertura de RQs.
 
 Uso:
-  ``python rag_screening.py --bib SLR_RAG_master_clean.bib --outdir .``
+  ``python rag_screening.py --bib SLR_RAG_master_clean.bib --outdir . --limit 0``
+  (el flag ``--limit`` controla cuántas entradas se procesan; por defecto se evalúan 20 para pruebas rápidas).
 """
 
 import argparse
@@ -42,6 +43,13 @@ import os
 import re
 import csv
 from typing import List, Dict, Tuple
+import string
+
+try:
+    from openpyxl import Workbook
+except Exception:  # pragma: no cover - dependencia opcional
+    Workbook = None
+
 
 # ---------------------------
 # Utilidades de parsing BibTeX
@@ -288,6 +296,7 @@ KW_RQ4 = [
 ]
 
 WINDOW_MIN, WINDOW_MAX = 2020, 2025
+TOP_N = 50
 
 def detect_year(entry: Dict[str, str]) -> int:
     """Detecta el año numérico de una entrada BibTeX.
@@ -507,6 +516,84 @@ def write_tsv(path: str, rows: List[Dict[str, str]], header: List[str]) -> None:
         for r in rows:
             w.writerow([r.get(h, '') for h in header])
 
+
+def write_xlsx(path: str, sheets: List[Tuple[str, List[str], List[Dict[str, str]]]]) -> None:
+    """Escribe las hojas indicadas en un archivo XLSX (si openpyxl está disponible)."""
+    if Workbook is None:
+        raise RuntimeError("openpyxl no está instalado; no se puede generar XLSX.")
+    wb = Workbook()
+    # eliminar hoja inicial
+    ws0 = wb.active
+    wb.remove(ws0)
+    for name, header, rows in sheets:
+        ws = wb.create_sheet(title=name[:31] or 'Sheet')
+        ws.append(header)
+        for row in rows:
+            ws.append([row.get(h, '') for h in header])
+    wb.save(path)
+
+
+# ---------------------------
+# Columnas dinámicas por keyword (SYN_RAG, SYN_LLM, KW_RQ1..4)
+# ---------------------------
+
+def _slugify(term: str) -> str:
+    """Convierte un término en un slug seguro para nombre de columna.
+
+    Reglas:
+      - minúsculas
+      - reemplaza todo lo que no sea alfanumérico por '_'
+      - colapsa guiones bajos repetidos
+      - recorta a un tamaño razonable para mantener TSV legible
+    """
+    t = (term or '').lower().strip()
+    # normalización básica sin depender de unicodedata para mantener simple
+    allowed = set(string.ascii_lowercase + string.digits)
+    buf = []
+    last_us = False
+    for ch in t:
+        if ch in allowed:
+            buf.append(ch)
+            last_us = False
+        else:
+            if not last_us:
+                buf.append('_')
+                last_us = True
+    slug = ''.join(buf).strip('_')
+    while '__' in slug:
+        slug = slug.replace('__', '_')
+    return slug[:48] if len(slug) > 48 else slug
+
+
+def build_keyword_columns() -> List[Tuple[str, str]]:
+    """Construye el mapeo columna<-término para las listas predefinidas.
+
+    Devuelve una lista de tuplas (col_name, search_term). Maneja colisiones
+    de slugs agregando sufijos numéricos.
+    """
+    groups = [
+        ('kw_rag_', SYN_RAG),
+        ('kw_llm_', SYN_LLM),
+        ('kw_rq1_', KW_RQ1),
+        ('kw_rq2_', KW_RQ2),
+        ('kw_rq3_', KW_RQ3),
+        ('kw_rq4_', KW_RQ4),
+    ]
+    out: List[Tuple[str, str]] = []
+    used: Dict[str, int] = {}
+    for prefix, terms in groups:
+        for term in terms:
+            slug = _slugify(term)
+            base = prefix + slug
+            name = base
+            if name in used:
+                used[name] += 1
+                name = f"{base}_{used[name]}"
+            else:
+                used[name] = 0
+            out.append((name, term))
+    return out
+
 def main() -> None:
     """Punto de entrada cuando se ejecuta como script.
 
@@ -514,7 +601,7 @@ def main() -> None:
     archivo ``.bib`` y la carpeta de salida. Luego ejecuta el pipeline
     completo de lectura, parsing, puntuación, etiquetado y exportación
     de resultados para la revisión sistemática. Se genera un archivo
-    TSV con todas las entradas, un resumen de conteos, un Top 20
+    TSV con todas las entradas, un resumen de conteos, un Top 50
     ordenado y un listado de entradas ambiguas.
 
     Las estadísticas se imprimen en consola para inspección rápida.
@@ -525,14 +612,20 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument('--bib', required=True, help='Ruta al archivo .bib')
     ap.add_argument('--outdir', default='.', help='Carpeta de salida')
+    ap.add_argument('--limit', type=int, default=20, help='Máximo de entradas a procesar (0 = todas).')
     args = ap.parse_args()
 
     os.makedirs(args.outdir, exist_ok=True)
 
     text = read_file(args.bib)
     entries = parse_bib_entries(text)
+    limit = max(0, args.limit or 0)
+    if limit and len(entries) > limit:
+        entries = entries[:limit]
 
     results: List[Dict[str, str]] = []
+    # Preparar columnas dinámicas de keywords usando las listas predefinidas
+    kw_columns = build_keyword_columns()
     include_count = 0
     exclude_count = 0
     maybe_count = 0
@@ -548,6 +641,50 @@ def main() -> None:
         rqs, total, label, decision = decide(e)
         reason = reason_from_rqs(rqs)
 
+        # Identificadores y metadatos
+        doi = (e.get('doi', '') or '').strip()
+        isbn = (e.get('isbn', '') or '').strip()
+        url = (e.get('url', '') or '').strip()
+        authors = (e.get('author', '') or '').strip()
+        if authors:
+            import re as _re
+            author_count = len([p for p in _re.split(r'\s+and\s+|,\s*', authors) if p.strip()])
+        else:
+            author_count = 0
+        abstract = (e.get('abstract', '') or '')
+        # longitud de abstract en caracteres (espacios colapsados)
+        import re as _re2
+        abstract_len = len(_re2.sub(r'\s+', ' ', abstract).strip()) if abstract else 0
+
+        # Tipo de publicación
+        pub_type = (e.get('type', '') or '').lower()
+        is_article = 1 if pub_type == 'article' else 0
+        is_inproceedings = 1 if pub_type == 'inproceedings' else 0
+        is_book = 1 if pub_type == 'book' else 0
+        is_incollection = 1 if pub_type == 'incollection' else 0
+
+        # Fuente (desde keywords: 'source: XXX') y banderas por fuente
+        kws_field = (e.get('keywords', '') or '')
+        import re as _re3
+        m_src = _re3.search(r'\bsource:\s*([A-Za-z ]+)', kws_field, flags=_re3.IGNORECASE)
+        source = (m_src.group(1).strip() if m_src else '')
+        src_acm = 1 if source.lower() == 'acm' else 0
+        src_ieee = 1 if source.lower() == 'ieee' else 0
+        src_scopus = 1 if source.lower() == 'scopus' else 0
+        src_springer = 1 if source.lower() == 'springer' else 0
+
+        # RQ hits explícitos
+        rq1_hit = 1 if 'RQ1' in rqs else 0
+        rq2_hit = 1 if 'RQ2' in rqs else 0
+        rq3_hit = 1 if 'RQ3' in rqs else 0
+        rq4_hit = 1 if 'RQ4' in rqs else 0
+
+        # Marca de presencia por término en las listas
+        text_all = (title + ' ' + abstract + ' ' + (kws_field or '')).lower()
+        kw_flags: Dict[str, int] = {}
+        for col, term in kw_columns:
+            kw_flags[col] = 1 if term.lower() in text_all else 0
+
         if decision == 'Include':
             include_count += 1
         elif decision == 'Exclude':
@@ -560,22 +697,47 @@ def main() -> None:
 
         rel_counts[label] += 1
 
-        results.append({
+        row = {
             'id': e.get('id', ''),
             'title': title,
             'year': str(year if year != -1 else ''),
             'venue': venue,
             'language': lang,
+            'doi': doi,
+            'isbn': isbn,
+            'url': url,
+            'authors': authors,
+            'author_count': str(author_count),
+            'abstract': abstract,
+            'abstract_len': str(abstract_len),
+            'pub_type': pub_type,
+            'is_article': str(is_article),
+            'is_inproceedings': str(is_inproceedings),
+            'is_book': str(is_book),
+            'is_incollection': str(is_incollection),
+            'source': source,
+            'src_acm': str(src_acm),
+            'src_ieee': str(src_ieee),
+            'src_scopus': str(src_scopus),
+            'src_springer': str(src_springer),
             'RQs': ','.join(rqs) if rqs else '-',
+            'rq1_hit': str(rq1_hit),
+            'rq2_hit': str(rq2_hit),
+            'rq3_hit': str(rq3_hit),
+            'rq4_hit': str(rq4_hit),
             'relevance': label,
             'score': f'{total:.1f}',
             'decision': decision,
             'reason': reason if reason else (
                 'Fuera de ventana' if year != -1 and (year < WINDOW_MIN or year > WINDOW_MAX) else ''
             ),
-        })
+        }
+        # Extiende con columnas dinámicas de keywords
+        for col, _term in kw_columns:
+            row[col] = str(kw_flags[col])
+        results.append(row)
 
-    # Orden para Top 20
+    # Orden para Top 50
     def sort_key(r: Dict[str, str]):
         try:
             y = int(r['year']) if r['year'] else -1
@@ -587,18 +749,23 @@ def main() -> None:
 
     # Escribir resultados completos
     out_all = os.path.join(args.outdir, 'screening_results.tsv')
-    header = [
+    base_header = [
         'id',
         'title',
         'year',
         'venue',
         'language',
+        'doi', 'isbn', 'url', 'authors', 'author_count', 'abstract', 'abstract_len',
+        'pub_type', 'is_article', 'is_inproceedings', 'is_book', 'is_incollection',
+        'source', 'src_acm', 'src_ieee', 'src_scopus', 'src_springer',
         'RQs',
+        'rq1_hit', 'rq2_hit', 'rq3_hit', 'rq4_hit',
         'relevance',
         'score',
         'decision',
         'reason',
     ]
+    header = base_header + [col for col, _ in kw_columns]
     write_tsv(out_all, results, header)
 
     # Resumen
@@ -615,10 +782,10 @@ def main() -> None:
         for rq in ['RQ1', 'RQ2', 'RQ3', 'RQ4']:
             f.write(f"  {rq}: {rq_counts.get(rq, 0)}\n")
 
-    # Top 20
-    out_top = os.path.join(args.outdir, 'screening_top20.tsv')
+    # Top 50
+    out_top = os.path.join(args.outdir, 'screening_top50.tsv')
     top_rows: List[Dict[str, str]] = []
-    for r in sorted_results[:20]:
+    for r in sorted_results[:TOP_N]:
         top_rows.append(
             {
                 'id': r['id'],
@@ -635,6 +802,16 @@ def main() -> None:
     out_amb = os.path.join(args.outdir, 'screening_ambiguous.tsv')
     amb_rows = [r for r in results if r['decision'] == 'Maybe']
     write_tsv(out_amb, amb_rows, header)
+
+    out_all_xlsx = os.path.join(args.outdir, 'screening_results.xlsx')
+    try:
+        write_xlsx(out_all_xlsx, [
+            ('results', header, results),
+            ('top50', ['id', 'title', 'year', 'RQs', 'score', 'reason'], top_rows),
+            ('ambiguous', header, amb_rows),
+        ])
+    except RuntimeError as exc:
+        print(f"[WARN] {exc}")
 
     print(f"Parsed entries: {len(entries)}")
     print(f"Total {len(entries)} Include {include_count} Exclude {exclude_count} Maybe {maybe_count}")
