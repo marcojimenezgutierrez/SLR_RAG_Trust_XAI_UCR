@@ -9,10 +9,10 @@ import re
 import shutil
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Sequence, Tuple, Mapping
+from typing import Dict, Iterable, List, Optional, Sequence, Tuple, Mapping, Callable
 
 import bibtexparser
 import httpx
@@ -26,7 +26,8 @@ STATUS_LLM_ERROR = "LLMError"
 STATUS_PARSE_ERROR = "ParseError"
 STATUS_TIMEOUT = "Timeout"
 
-NEW_COLUMNS = ["rqs_llm", "llm_explanation", "llm_response", "llm_reasoning", "llm_status"]
+LLM_RQ_COLUMNS = ["RQ1_LLM", "RQ2_LLM", "RQ3_LLM", "RQ4_LLM"]
+NEW_COLUMNS = ["rqs_llm", "llm_explanation", "llm_response", "llm_reasoning", "llm_status"] + LLM_RQ_COLUMNS
 VALID_PROVIDERS = {"ollama_native", "openai_compat"}
 DEFAULT_PROVIDER = "ollama_native"
 DEFAULT_MODEL = "gpt-oss:20b"
@@ -61,14 +62,19 @@ Instructions
 ------------
 1. Decide which research questions are explicitly addressed by this work.
 2. Base your judgement solely on the supplied title and abstract.
-3. If the evidence is unclear, treat the research question as NOT covered.
-4. Reply ONLY with a JSON object exactly like this example:
-{{"rqs":"RQ1,RQ3","explanation":"breve justificación en español"}}
+3. If the evidence is unclear, treat the research question as NOT covered (score 0).
+4. Assign a relevance score for each RQ using only these values:
+    - 1 → Clearly addresses it.
+    - 0.5 → Partial or indirect signs.
+    - 0 → No indications.
+5. Reply ONLY with a JSON object exactly like this example:
+{{"rqs":"RQ1,RQ3","explanation":"breve justificación en español","scores":{{"RQ1":1,"RQ2":0,"RQ3":0.5,"RQ4":0}}}}
 
 JSON requirements:
 - Valid RQ codes: {allowed_codes}.
 - The `rqs` value must be a comma-separated list without spaces (use an empty string "" if none apply).
-- `explanation` must be a concise justification in Spanish (fewer than 60 words).
+- `explanation` must be una justificación concisa en español (menos de 60 palabras).
+- `scores` debe contener TODAS las RQ válidas como claves y valores 0, 0.5 o 1 (número, no texto).
 - Return only the JSON, without code fences or additional commentary.
 """
 
@@ -106,6 +112,7 @@ class WorkResult:
     explanation: str = ""
     reasoning: str = ""
     raw_response: str = ""
+    scores: Dict[str, float] = field(default_factory=dict)
 
 
 class LLMClientError(Exception):
@@ -264,6 +271,7 @@ def parse_arguments(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument("--no-capture-reasoning", dest="capture_reasoning", action="store_false", help="Disable reasoning capture.")
     parser.set_defaults(capture_reasoning=True)
     parser.add_argument("--progress-every", type=int, default=1, help="Print progress every N completed items (default: 1).")
+    parser.add_argument("--checkpoint-every", type=int, default=5, help="Escribe un checkpoint TSV cada N resultados (0 desactiva).")
     return parser.parse_args(argv)
 
 
@@ -468,7 +476,7 @@ def extract_json_payload(raw: str) -> Dict[str, object]:
     return json.loads(stripped)
 
 
-def parse_llm_response(raw: str, allowed_codes: Sequence[str]) -> Tuple[str, str]:
+def parse_llm_response(raw: str, allowed_codes: Sequence[str]) -> Tuple[str, str, Dict[str, float]]:
     payload = extract_json_payload(raw)
     if not isinstance(payload, dict):
         raise ValueError("LLM response is not a JSON object.")
@@ -491,7 +499,23 @@ def parse_llm_response(raw: str, allowed_codes: Sequence[str]) -> Tuple[str, str
             if code not in seen:
                 seen.append(code)
         normalized = ",".join(seen)
-    return normalized, explanation
+    scores: Dict[str, float] = {code: 0.0 for code in allowed_set}
+    raw_scores = payload.get("scores")
+    if raw_scores is None:
+        raise ValueError("Missing 'scores' object in LLM response.")
+    if not isinstance(raw_scores, dict):
+        raise ValueError("'scores' must be a JSON object with RQ codes.")
+    for code, value in raw_scores.items():
+        if code not in allowed_set:
+            raise ValueError(f"Invalid score code '{code}' in LLM response.")
+        try:
+            numeric = float(value)
+        except Exception as exc:
+            raise ValueError(f"Score for {code} is not numeric: {value}") from exc
+        if numeric not in {0.0, 0.5, 1.0}:
+            raise ValueError(f"Score for {code} must be 0, 0.5, or 1 (got {numeric}).")
+        scores[code] = numeric
+    return normalized, explanation, scores
 
 
 def extract_reasoning_block(raw: str) -> Tuple[str, str]:
@@ -509,6 +533,9 @@ def apply_result(row: Dict[str, str], result: WorkResult) -> None:
     row["llm_response"] = result.raw_response
     row["llm_reasoning"] = result.reasoning
     row["llm_status"] = result.status
+    scores = result.scores or {}
+    for code, column in zip(["RQ1", "RQ2", "RQ3", "RQ4"], LLM_RQ_COLUMNS):
+        row[column] = str(scores.get(code, 0.0))
 
 
 def mark_simple_status(row: Dict[str, str], status: str, message: str) -> None:
@@ -517,6 +544,8 @@ def mark_simple_status(row: Dict[str, str], status: str, message: str) -> None:
     row["llm_response"] = ""
     row["llm_reasoning"] = ""
     row["llm_status"] = status
+    for column in LLM_RQ_COLUMNS:
+        row[column] = "0"
 
 
 def collect_work_items(
@@ -601,6 +630,7 @@ def run_work_items(
     concurrency: int,
     capture_reasoning: bool,
     progress_every: int,
+    result_callback: Optional[Callable[[WorkResult], None]] = None,
 ) -> List[WorkResult]:
     if not items:
         return []
@@ -649,7 +679,7 @@ def run_work_items(
                     if extracted_reasoning:
                         reasoning_block = extracted_reasoning
                         response_for_parsing = remainder
-                rqs, explanation = parse_llm_response(response_for_parsing, allowed_codes)
+                rqs, explanation, scores = parse_llm_response(response_for_parsing, allowed_codes)
                 return WorkResult(
                     row_index=item.row_index,
                     status=STATUS_OK,
@@ -657,6 +687,7 @@ def run_work_items(
                     explanation=explanation,
                     reasoning=reasoning_block,
                     raw_response=raw_response,
+                    scores=scores,
                 )
             except LLMTimeoutError:
                 logging.error("LLM timeout for %s (attempt %s/%s).", item.row_id, attempt, max_retries)
@@ -681,7 +712,10 @@ def run_work_items(
     workers = max(1, concurrency)
     if workers == 1:
         for item in items:
-            results.append(_execute(item))
+            result = _execute(item)
+            results.append(result)
+            if result_callback:
+                result_callback(result)
             completed += 1
             _progress_tick()
         return results
@@ -689,7 +723,10 @@ def run_work_items(
     with ThreadPoolExecutor(max_workers=workers) as executor:
         future_map = {executor.submit(_execute, item): item for item in items}
         for future in as_completed(future_map):
-            results.append(future.result())
+            result = future.result()
+            results.append(result)
+            if result_callback:
+                result_callback(result)
             completed += 1
             _progress_tick()
     return results
@@ -767,6 +804,21 @@ def run(argv: Optional[Sequence[str]] = None) -> int:
 
     logging.info("Prepared %s work items for LLM processing.", len(items))
 
+    checkpoint_every = max(0, int(args.checkpoint_every or 0))
+    processed_counter = 0
+
+    def save_checkpoint(tag: str) -> None:
+        write_tsv(output_tsv, fieldnames, rows)
+        logging.info("Checkpoint %s guardado en %s (%s/%s procesados).", tag, output_tsv, processed_counter, len(items))
+
+    def handle_result(result: WorkResult) -> None:
+        nonlocal processed_counter
+        apply_result(rows[result.row_index], result)
+        processed_counter += 1
+        if checkpoint_every and processed_counter % checkpoint_every == 0:
+            save_checkpoint(f"#{processed_counter}")
+
+    results: List[WorkResult] = []
     if items:
         with LLMClient(
             provider=args.provider,
@@ -785,9 +837,10 @@ def run(argv: Optional[Sequence[str]] = None) -> int:
                 concurrency=args.concurrency,
                 capture_reasoning=args.capture_reasoning,
                 progress_every=max(1, int(args.progress_every or 1)),
+                result_callback=handle_result,
             )
-        for result in results:
-            apply_result(rows[result.row_index], result)
+        if checkpoint_every and processed_counter % checkpoint_every != 0:
+            save_checkpoint("final")
     else:
         logging.info("Nothing to process (all rows skipped or filtered).")
 
