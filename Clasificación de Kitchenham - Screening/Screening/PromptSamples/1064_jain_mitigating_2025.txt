@@ -1,0 +1,41 @@
+--------------------------------------------------------
+ID: jain_mitigating_2025 | On Mitigating
+--------------------------------------------------------
+
+You are a senior reviewer for a systematic literature review focused on Retrieval-Augmented Generation (RAG) systems, trust, hallucinations, explainability, calibration, and evaluation methodologies.
+
+Use only the provided bibliographic metadata.
+
+Title: On Mitigating
+Abstract: This paper explores the integration of large language models (LLMs) into software engineering practices, focusing on code generation and review processes. We present a novel framework, LLM-SE, that leverages fine-tuned LLMs to automate routine tasks while enhancing developer productivity. Through empirical evaluation on open-source repositories, we demonstrate a 25% reduction in review time and improved code quality metrics. Our approach addresses key challenges such as hallucination mitigation and context awareness, providing actionable insights for practitioners adopting AI in SE workflows.
+Kitchenham heuristic tags: RQ2,RQ4
+Screener rationale: Factualidad/alucinaciones y Métricas/metodologías
+Additional context keywords (not RQs): retrieval-augmented generation, retrieval-augmented, retrieval augmented, rag, graph rag, graphrag, grounded generation, document grounded, document-grounded, context augmentation, context-augmented, hybrid llm, hybrid llms, agentic rag, provenance, source attribution, large language model, large language models, llm, llms, chatgpt, gpt-4, gpt4, gpt-3, gpt3, openai, bard, gemini, llama, llama2, vicuna, falcon, mistral, claude, paLM, paLM2, alpaca
+
+Research questions to evaluate
+------------------------------
+RQ1: (Trust): How does RAG affect people’s perceived trust and credibility compared to non-RAG LLMs?
+Keywords: trust, confidence, credibility, user perception, perceived reliability, overtrust, trustworthiness
+
+RQ2: (Quality): To what extent does RAG reduce errors and hallucinations and improve factuality/faithfulness compared to non-RAG LLMs?
+Keywords: hallucination, hallucinations, factuality, faithfulness, accuracy, grounding, grounded, correctness, consistency
+
+RQ3: (XAI → perception and calibration): What XAI mechanisms (attribution/citations, evidence highlighting, textual explanations, example-based or concept-based
+Keywords: explainable ai, explainability, interpretable, interpretability, transparency, attribution, saliency, attention, citation, citations, reference, provenance, source attribution, evidence, evidence highlighting, highlighting, calibration, brier, ece
+
+RQ4: (Methods and metrics): What methodological approaches, metrics, and instruments have been used to evaluate trust/credibility, factuality/faithfulness, and explainability in RAG systems?
+Keywords: evaluation, evaluation metric, evaluation metrics, metric, metrics, methodology, methodologies, method, methods, protocol, instrument, questionnaire, scale, survey, user study, benchmark, dataset, guideline, framework, pipeline
+
+Instructions
+------------
+1. Decide which research questions are explicitly addressed by this work.
+2. Base your judgement solely on the supplied title and abstract.
+3. If the evidence is unclear, treat the research question as NOT covered.
+4. Reply ONLY with a JSON object exactly like this example:
+{"rqs":"RQ1,RQ3","explanation":"breve justificación en español"}
+
+JSON requirements:
+- Valid RQ codes: RQ1, RQ2, RQ3, RQ4.
+- The `rqs` value must be a comma-separated list without spaces (use an empty string "" if none apply).
+- `explanation` must be a concise justification in Spanish (fewer than 60 words).
+- Return only the JSON, without code fences or additional commentary.

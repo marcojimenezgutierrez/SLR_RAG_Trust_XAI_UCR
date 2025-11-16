@@ -1,0 +1,13 @@
+Results TSV: C:\Doctorado\SLR_RAG_Trust_XAI_UCR\Clasificación de Kitchenham - Screening\Resultado\20251109\screening_results_20251109_002.tsv
+Results XLSX: C:\Doctorado\SLR_RAG_Trust_XAI_UCR\Clasificación de Kitchenham - Screening\Resultado\20251109\screening_results_20251109_002.xlsx
+Prompts dir: C:\Doctorado\SLR_RAG_Trust_XAI_UCR\Clasificación de Kitchenham - Screening\Resultado\20251109\prompts
+
+Start: 2025-11-09T21:56:47
+End: 2025-11-09T23:10:51
+Duration: 01:14:03 (4443.626s)
+Items: 522/522 | Avg/item: 8.513s | Rate: 0.117 it/s
+Pre: rows=538 processed=0 IdNoMatch=16 NoAbstract=0 to_process=522 bib_total=522
+
+Status counts:
+  IdNoMatch: 16
+  ok: 522

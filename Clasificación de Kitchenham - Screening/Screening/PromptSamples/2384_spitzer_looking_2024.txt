@@ -1,0 +1,41 @@
+--------------------------------------------------------
+ID: spitzer_beyond_2024 | Looking Through
+--------------------------------------------------------
+
+You are a senior reviewer for a systematic literature review focused on Retrieval-Augmented Generation (RAG) systems, trust, hallucinations, explainability, calibration, and evaluation methodologies.
+
+Use only the provided bibliographic metadata.
+
+Title: Looking Through
+Abstract: 3D Gaussian Splatting (GS) has shown impressive novel view synthesis results for static scenes. However, it is not straightforward to apply it to dynamic scenes, especially when tracking and mapping are required. In this paper, we propose GS-SLAM, a new system that combines GS with Simultaneous Localization and Mapping (SLAM) for accurate 3D reconstruction of dynamic scenes. Our system initializes a GS representation from a set of keyframes and optimizes it jointly with camera poses and a coarse voxel map. We introduce a novel densification and pruning scheme that adapts the Gaussian representation to the scene content. Extensive experiments on both synthetic and real-world datasets demonstrate that GS-SLAM outperforms state-of-the-art methods in terms of reconstruction quality and tracking accuracy.
+Kitchenham heuristic tags: RQ2,RQ4
+Screener rationale: Factualidad/alucinaciones y Métricas/metodologías
+Additional context keywords (not RQs): retrieval-augmented generation, retrieval-augmented, retrieval augmented, rag, graph rag, graphrag, grounded generation, document grounded, document-grounded, context augmentation, context-augmented, hybrid llm, hybrid llms, agentic rag, provenance, source attribution, large language model, large language models, llm, llms, chatgpt, gpt-4, gpt4, gpt-3, gpt3, openai, bard, gemini, llama, llama2, vicuna, falcon, mistral, claude, paLM, paLM2, alpaca
+
+Research questions to evaluate
+------------------------------
+RQ1: (Trust): How does RAG affect people’s perceived trust and credibility compared to non-RAG LLMs?
+Keywords: trust, confidence, credibility, user perception, perceived reliability, overtrust, trustworthiness
+
+RQ2: (Quality): To what extent does RAG reduce errors and hallucinations and improve factuality/faithfulness compared to non-RAG LLMs?
+Keywords: hallucination, hallucinations, factuality, faithfulness, accuracy, grounding, grounded, correctness, consistency
+
+RQ3: (XAI → perception and calibration): What XAI mechanisms (attribution/citations, evidence highlighting, textual explanations, example-based or concept-based
+Keywords: explainable ai, explainability, interpretable, interpretability, transparency, attribution, saliency, attention, citation, citations, reference, provenance, source attribution, evidence, evidence highlighting, highlighting, calibration, brier, ece
+
+RQ4: (Methods and metrics): What methodological approaches, metrics, and instruments have been used to evaluate trust/credibility, factuality/faithfulness, and explainability in RAG systems?
+Keywords: evaluation, evaluation metric, evaluation metrics, metric, metrics, methodology, methodologies, method, methods, protocol, instrument, questionnaire, scale, survey, user study, benchmark, dataset, guideline, framework, pipeline
+
+Instructions
+------------
+1. Decide which research questions are explicitly addressed by this work.
+2. Base your judgement solely on the supplied title and abstract.
+3. If the evidence is unclear, treat the research question as NOT covered.
+4. Reply ONLY with a JSON object exactly like this example:
+{"rqs":"RQ1,RQ3","explanation":"breve justificación en español"}
+
+JSON requirements:
+- Valid RQ codes: RQ1, RQ2, RQ3, RQ4.
+- The `rqs` value must be a comma-separated list without spaces (use an empty string "" if none apply).
+- `explanation` must be a concise justification in Spanish (fewer than 60 words).
+- Return only the JSON, without code fences or additional commentary.
