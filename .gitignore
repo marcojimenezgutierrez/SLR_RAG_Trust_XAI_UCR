@@ -125,7 +125,7 @@ logs/
 dmypy.json
 
 # Project outputs
-screening_out/
+**screening_out/
 **/Resultado/
 **/prompts/
 
